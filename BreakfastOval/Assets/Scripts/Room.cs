@@ -17,8 +17,8 @@ public class Room : Space
         Tiles.Add(tile);
     }
 
-    public static Vector2 GenerateSize()
+    public static Vector2 GenerateSize(Vector2 range)
     {
-        return new Vector2(Random.Range(MapGenerator.RoomMinX, MapGenerator.RoomMaxX), Random.Range(MapGenerator.RoomMinY, MapGenerator.RoomMaxY));
+        return new Vector2(Random.Range(Mathf.Max(MapGenerator.RoomMinX, range.x), MapGenerator.RoomMaxX), Random.Range(Mathf.Max(MapGenerator.RoomMinY, range.y), MapGenerator.RoomMaxY));
     }
 }

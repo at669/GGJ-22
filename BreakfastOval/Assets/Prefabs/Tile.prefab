@@ -241,6 +241,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TileType: 0
   Coord: {x: 0, y: 0}
+  Doors: 
   Walls: 
   TileNorth: 0
   TileEast: 0
@@ -250,6 +251,7 @@ MonoBehaviour:
   WallEastObj: {fileID: 9087579485375694082}
   WallSouthObj: {fileID: 9087579483981489798}
   WallWestObj: {fileID: 9087579484647098587}
+  FloorObj: {fileID: 9087579485921985722}
 --- !u!1 &9087579485375694082
 GameObject:
   m_ObjectHideFlags: 0

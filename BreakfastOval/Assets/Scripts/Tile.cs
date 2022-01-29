@@ -7,6 +7,7 @@ public class Tile : MonoBehaviour
 {
     public TileType TileType;
     public Vector2 Coord;
+    public List<Direction> Doors = new List<Direction>();
     public List<Direction> Walls = new List<Direction>();
     public TileType TileNorth = TileType.Error;
     public TileType TileEast = TileType.Error;
@@ -16,6 +17,7 @@ public class Tile : MonoBehaviour
     public GameObject WallEastObj;
     public GameObject WallSouthObj;
     public GameObject WallWestObj;
+    public GameObject FloorObj;
 
     // Start is called before the first frame update
     void OnEnable()
@@ -27,6 +29,16 @@ public class Tile : MonoBehaviour
     void Update()
     {
 
+    }
+
+    public void AssignDoorAt(Direction dir)
+    {
+        if (Walls.Contains(dir))
+        {
+            Walls.Remove(dir);
+        }
+        Doors.Add(dir);
+        GetWallObject(dir).GetComponent<Renderer>().material.color = Color.blue;
     }
 
     /// <summary>
@@ -64,5 +76,22 @@ public class Tile : MonoBehaviour
     public Direction SelectRandomWall() {
         int rand = Random.Range(0, Walls.Count);
         return Walls[rand];
+    }
+
+    public GameObject GetWallObject(Direction dir)
+    {
+        switch (dir)
+        {
+            case Direction.North:
+                return WallNorthObj;
+            case Direction.East:
+                return WallEastObj;
+            case Direction.South:
+                return WallSouthObj;
+            case Direction.West:
+                return WallWestObj;
+            default:
+                return null;
+        }
     }
 }

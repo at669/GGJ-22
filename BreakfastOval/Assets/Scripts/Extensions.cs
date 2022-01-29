@@ -22,6 +22,11 @@ public static class Extensions
 
     public static Vector2 GetCoord(this Tile tile, Direction dir, int dist)
     {
+        if (tile == null)
+        {
+            Debug.LogError("Input null tile!");
+
+        }
         int xDiff = 0;
         int yDiff = 0;
         switch (dir)

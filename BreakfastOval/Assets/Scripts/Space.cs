@@ -10,21 +10,25 @@ public abstract class Space
     public List<Tile> TilesWithWalls = new List<Tile>();
     public List<Tile> TilesWithoutWalls = new List<Tile>();
 
-    public void Reset(bool completeReset = false)
+    public void Reset()
     {
-        // if (completeReset)
-        // {
-            Tiles = new List<Tile>();
-        // }
+        Tiles = new List<Tile>();
         TilesWithWalls = new List<Tile>();
         TilesWithoutWalls = new List<Tile>();
     }
 
     public Tile SelectBorderTileForHall()
     {
-        Debug.Log(TilesWithWalls.Count);
+        TilesWithWalls = Tiles.Where(t => t.Walls.Count > 0).ToList();
+        Debug.Log($"TilesWithWalls.Count {TilesWithWalls.Count}");
+        // var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor() && t.Doors.Count == 0).ToArray();
         var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor()).ToArray();
-        Debug.Log($"valid walls len {validWalls.Length}");
+        if (validWalls.Length == 0)
+        {
+            Debug.Log($"no valid border wall tiles");
+            return null;
+        }
+        // Debug.Log($"valid walls len {validWalls.Length}");
         int rand = Random.Range(0, validWalls.Length);
         return validWalls[rand];
     }
@@ -39,28 +43,28 @@ public abstract class Space
             hasWalls = CheckAssignNeighbor(t, Direction.East, type) || hasWalls;
             hasWalls = CheckAssignNeighbor(t, Direction.South, type) || hasWalls;
             hasWalls = CheckAssignNeighbor(t, Direction.West, type) || hasWalls;
-            // if (hasWalls)
-            // {
-            //     if (!TilesWithWalls.Contains(t))
-            //     {
-            //         TilesWithWalls.Add(t);
-            //     }
-            //     if (TilesWithoutWalls.Contains(t))
-            //     {
-            //         TilesWithoutWalls.Remove(t);
-            //     }
-            // }
-            // else
-            // {
-            //     if (!TilesWithoutWalls.Contains(t))
-            //     {
-            //         TilesWithoutWalls.Add(t);
-            //     }
-            //     if (TilesWithWalls.Contains(t))
-            //     {
-            //         TilesWithWalls.Remove(t);
-            //     }
-            // }
+            if (hasWalls)
+            {
+                if (!TilesWithWalls.Contains(t))
+                {
+                    TilesWithWalls.Add(t);
+                }
+                if (TilesWithoutWalls.Contains(t))
+                {
+                    TilesWithoutWalls.Remove(t);
+                }
+            }
+            else
+            {
+                if (!TilesWithoutWalls.Contains(t))
+                {
+                    TilesWithoutWalls.Add(t);
+                }
+                if (TilesWithWalls.Contains(t))
+                {
+                    TilesWithWalls.Remove(t);
+                }
+            }
         }
     }
 

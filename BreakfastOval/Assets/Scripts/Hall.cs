@@ -12,6 +12,11 @@ public class Hall : Space
         Length = len;
     }
 
+    public void SetLastTile(Tile tile)
+    {
+        LastTile = tile;
+    }
+
     public void AddTile(Tile tile, bool isLast = false)
     {
         Tiles.Add(tile);
