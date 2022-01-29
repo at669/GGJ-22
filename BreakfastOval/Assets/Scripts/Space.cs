@@ -20,22 +20,18 @@ public abstract class Space
     public Tile SelectBorderTileForHall()
     {
         TilesWithWalls = Tiles.Where(t => t.Walls.Count > 0).ToList();
-        Debug.Log($"TilesWithWalls.Count {TilesWithWalls.Count}");
         // var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor() && t.Doors.Count == 0).ToArray();
         var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor()).ToArray();
         if (validWalls.Length == 0)
         {
-            Debug.Log($"no valid border wall tiles");
             return null;
         }
-        // Debug.Log($"valid walls len {validWalls.Length}");
         int rand = Random.Range(0, validWalls.Length);
         return validWalls[rand];
     }
 
     public void ManageWalls(TileType type)
     {
-        // Reset(false);
         foreach (Tile t in Tiles)
         {
             bool hasWalls = false;
@@ -68,22 +64,31 @@ public abstract class Space
         }
     }
 
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="t"></param>
+    /// <param name="dir"></param>
+    /// <param name="type"></param>
+    /// <returns>True if this tile will have a wall in given direction</returns>
     bool CheckAssignNeighbor(Tile t, Direction dir, TileType type)
     {
+        bool res = true;
         var coordAt = t.GetCoord(dir, 1);
         if (CheckCoordInSpace(coordAt))
         {
             var tileToDir = MapGenerator.GetTileFromCoord(coordAt);
             if (tileToDir != null)
             {
-                return tileToDir.AssignNeighborAt(dir.GetOpposite(), type);
+                res = tileToDir.AssignNeighborAt(dir.GetOpposite(), type);
             }
         }
-        return true;
+
+        return res;
     }
 
     public bool CheckCoordInSpace(Vector2 coord)
     {
-        return Tiles.Where(t => Vector2.Equals(t.Coord, coord)).Count() > 0;
+        return Tiles.Where(t => t.Coord ==  coord).Count() > 0;
     }
 }

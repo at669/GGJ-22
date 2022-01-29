@@ -250,11 +250,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MAX_ITER: 20
-  worldSize: 1400000014000000
-  numRooms: 5
-  hallLength: 050000000a000000
-  roomMinSize: 0300000003000000
-  roomMaxSize: 0800000008000000
+  worldSize: 3200000032000000
+  numRooms: 10
+  hallLength: 030000000a000000
+  roomMinSize: 0200000002000000
+  roomMaxSize: 0400000004000000
   tilePrefab: {fileID: 9087579484958466513, guid: d26b2f6ce1e5145dca7a6a730c30820d, type: 3}
 --- !u!1 &2067369778
 GameObject:

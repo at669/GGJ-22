@@ -25,12 +25,6 @@ public class Tile : MonoBehaviour
         Walls = Extensions.AllDirections();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void AssignDoorAt(Direction dir)
     {
         if (Walls.Contains(dir))
@@ -46,7 +40,7 @@ public class Tile : MonoBehaviour
     /// </summary>
     /// <param name="fromDir"></param>
     /// <param name="fromType"></param>
-    /// <returns>True if there are still walls</returns>
+    /// <returns>True if there is a wall on this tile in fromDir</returns>
     public bool AssignNeighborAt(Direction fromDir, TileType fromType)
     {
         switch (fromDir)
@@ -70,7 +64,7 @@ public class Tile : MonoBehaviour
             Walls.Remove(fromDir);
         }
 
-        return Walls.Count > 0;
+        return Walls.Contains(fromDir);
     }
 
     public Direction SelectRandomWall() {

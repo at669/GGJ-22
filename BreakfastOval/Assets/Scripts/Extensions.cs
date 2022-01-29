@@ -25,7 +25,6 @@ public static class Extensions
         if (tile == null)
         {
             Debug.LogError("Input null tile!");
-
         }
         int xDiff = 0;
         int yDiff = 0;
