@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public enum Direction { Error, North, East, South, West }
-public enum TileType { Error, Room, Hall, Nothing }
-
 public class Tile : MonoBehaviour
 {
     public TileType TileType;
@@ -23,7 +20,7 @@ public class Tile : MonoBehaviour
     // Start is called before the first frame update
     void OnEnable()
     {
-        Walls = TileExtensions.AllDirections();
+        Walls = Extensions.AllDirections();
     }
 
     // Update is called once per frame
@@ -32,7 +29,13 @@ public class Tile : MonoBehaviour
 
     }
 
-    public void AssignNeighborAt(Direction fromDir, TileType fromType)
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="fromDir"></param>
+    /// <param name="fromType"></param>
+    /// <returns>True if there are still walls</returns>
+    public bool AssignNeighborAt(Direction fromDir, TileType fromType)
     {
         switch (fromDir)
         {
@@ -54,6 +57,8 @@ public class Tile : MonoBehaviour
         {
             Walls.Remove(fromDir);
         }
+
+        return Walls.Count > 0;
     }
 
     public Direction SelectRandomWall() {

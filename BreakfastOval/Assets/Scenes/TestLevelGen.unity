@@ -249,11 +249,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3a657bb7abf84ac291ad3014308d65a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldSize: 3200000032000000
+  worldSize: 1400000014000000
   numRooms: 2
-  hallLength: 0000000000000000
-  roomMinSize: 0300000003000000
-  roomMaxSize: 0800000008000000
+  hallLength: 0300000008000000
+  roomMinSize: 0200000002000000
+  roomMaxSize: 0200000002000000
   tilePrefab: {fileID: 9087579484958466513, guid: d26b2f6ce1e5145dca7a6a730c30820d, type: 3}
 --- !u!1 &2067369778
 GameObject:
