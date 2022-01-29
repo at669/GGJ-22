@@ -1,0 +1,89 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+public abstract class Space
+{
+    public Rect Rect;
+    public List<Tile> Tiles = new List<Tile>();
+    public List<Tile> TilesWithWalls = new List<Tile>();
+    public List<Tile> TilesWithoutWalls = new List<Tile>();
+
+    public void Reset()
+    {
+        Tiles = new List<Tile>();
+        TilesWithWalls = new List<Tile>();
+        TilesWithoutWalls = new List<Tile>();
+    }
+
+    public Tile SelectBorderTileForHall()
+    {
+        TilesWithWalls = Tiles.Where(t => t.Walls.Count > 0).ToList();
+        Debug.Log($"TilesWithWalls.Count {TilesWithWalls.Count}");
+        // var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor() && t.Doors.Count == 0).ToArray();
+        var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor()).ToArray();
+        if (validWalls.Length == 0)
+        {
+            Debug.Log($"no valid border wall tiles");
+            return null;
+        }
+        // Debug.Log($"valid walls len {validWalls.Length}");
+        int rand = Random.Range(0, validWalls.Length);
+        return validWalls[rand];
+    }
+
+    public void ManageWalls(TileType type)
+    {
+        // Reset(false);
+        foreach (Tile t in Tiles)
+        {
+            bool hasWalls = false;
+            hasWalls = CheckAssignNeighbor(t, Direction.North, type) || hasWalls;
+            hasWalls = CheckAssignNeighbor(t, Direction.East, type) || hasWalls;
+            hasWalls = CheckAssignNeighbor(t, Direction.South, type) || hasWalls;
+            hasWalls = CheckAssignNeighbor(t, Direction.West, type) || hasWalls;
+            if (hasWalls)
+            {
+                if (!TilesWithWalls.Contains(t))
+                {
+                    TilesWithWalls.Add(t);
+                }
+                if (TilesWithoutWalls.Contains(t))
+                {
+                    TilesWithoutWalls.Remove(t);
+                }
+            }
+            else
+            {
+                if (!TilesWithoutWalls.Contains(t))
+                {
+                    TilesWithoutWalls.Add(t);
+                }
+                if (TilesWithWalls.Contains(t))
+                {
+                    TilesWithWalls.Remove(t);
+                }
+            }
+        }
+    }
+
+    bool CheckAssignNeighbor(Tile t, Direction dir, TileType type)
+    {
+        var coordAt = t.GetCoord(dir, 1);
+        if (CheckCoordInSpace(coordAt))
+        {
+            var tileToDir = MapGenerator.GetTileFromCoord(coordAt);
+            if (tileToDir != null)
+            {
+                return tileToDir.AssignNeighborAt(dir.GetOpposite(), type);
+            }
+        }
+        return true;
+    }
+
+    public bool CheckCoordInSpace(Vector2 coord)
+    {
+        return Tiles.Where(t => Vector2.Equals(t.Coord, coord)).Count() > 0;
+    }
+}
