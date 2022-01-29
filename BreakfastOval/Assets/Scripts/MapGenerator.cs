@@ -88,7 +88,6 @@ public class MapGenerator : MonoBehaviour
         // // Generate second room
         // var hallTile = initHall.GetLastTile();
         // var doorWall = SelectRandomEmptyWall(hallTile);
-
         // // Find bottom left corner of next room
         // (var bottomLeft, var range) = GetBottomLeftCorner(hallTile, doorWall);
         // var room1 = GenerateRoom(bottomLeft, range, true);
@@ -249,6 +248,38 @@ public class MapGenerator : MonoBehaviour
         return room;
     }
 
+    void ManageSingleWall(Direction dir, Tile t, Space space)
+    {
+        if (!t.Walls.Contains(dir))
+        {
+            if (space.TilesWithWalls.Contains(t))
+            {
+                space.TilesWithWalls.Remove(t);
+            }
+            space.TilesWithoutWalls.Add(t);
+
+            switch (dir)
+            {
+                case Direction.North:
+                    t.WallNorthObj.SetActive(false);
+                    break;
+                case Direction.East:
+                    t.WallEastObj.SetActive(false);
+                    break;
+                case Direction.South:
+                    t.WallSouthObj.SetActive(false);
+                    break;
+                case Direction.West:
+                    t.WallWestObj.SetActive(false);
+                    break;
+            }
+        }
+        else
+        {
+            space.TilesWithWalls.Add(t);
+        }
+    }
+
     void ManageSpaceWalls(Space space, TileType type)
     {
         space.ManageWalls(type);
@@ -256,58 +287,10 @@ public class MapGenerator : MonoBehaviour
         // Turn off applicable prefab parts
         foreach (Tile t in space.Tiles)
         {
-            if (!t.Walls.Contains(Direction.North))
-            {
-                if (space.TilesWithWalls.Contains(t))
-                {
-                    space.TilesWithWalls.Remove(t);
-                }
-                space.TilesWithoutWalls.Add(t);
-                t.WallNorthObj.SetActive(false);
-            }
-            else
-            {
-                space.TilesWithWalls.Add(t);
-            }
-            if (!t.Walls.Contains(Direction.South))
-            {
-                if (space.TilesWithWalls.Contains(t))
-                {
-                    space.TilesWithWalls.Remove(t);
-                }
-                space.TilesWithoutWalls.Add(t);
-                t.WallSouthObj.SetActive(false);
-            }
-            else
-            {
-                space.TilesWithWalls.Add(t);
-            }
-            if (!t.Walls.Contains(Direction.East))
-            {
-                if (space.TilesWithWalls.Contains(t))
-                {
-                    space.TilesWithWalls.Remove(t);
-                }
-                space.TilesWithoutWalls.Add(t);
-                t.WallEastObj.SetActive(false);
-            }
-            else
-            {
-                space.TilesWithWalls.Add(t);
-            }
-            if (!t.Walls.Contains(Direction.West))
-            {
-                if (space.TilesWithWalls.Contains(t))
-                {
-                    space.TilesWithWalls.Remove(t);
-                }
-                space.TilesWithoutWalls.Add(t);
-                t.WallWestObj.SetActive(false);
-            }
-            else
-            {
-                space.TilesWithWalls.Add(t);
-            }
+            ManageSingleWall(Direction.North, t, space);
+            ManageSingleWall(Direction.South, t, space);
+            ManageSingleWall(Direction.East, t, space);
+            ManageSingleWall(Direction.West, t, space);
         }
     }
 
