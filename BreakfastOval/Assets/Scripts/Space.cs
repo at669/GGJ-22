@@ -10,15 +10,28 @@ public abstract class Space
     public List<Tile> TilesWithWalls = new List<Tile>();
     public List<Tile> TilesWithoutWalls = new List<Tile>();
 
+    public void Reset(bool completeReset = false)
+    {
+        // if (completeReset)
+        // {
+            Tiles = new List<Tile>();
+        // }
+        TilesWithWalls = new List<Tile>();
+        TilesWithoutWalls = new List<Tile>();
+    }
+
     public Tile SelectBorderTileForHall()
     {
+        Debug.Log(TilesWithWalls.Count);
         var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor()).ToArray();
+        Debug.Log($"valid walls len {validWalls.Length}");
         int rand = Random.Range(0, validWalls.Length);
         return validWalls[rand];
     }
 
     public void ManageWalls(TileType type)
     {
+        // Reset(false);
         foreach (Tile t in Tiles)
         {
             bool hasWalls = false;
@@ -26,14 +39,28 @@ public abstract class Space
             hasWalls = CheckAssignNeighbor(t, Direction.East, type) || hasWalls;
             hasWalls = CheckAssignNeighbor(t, Direction.South, type) || hasWalls;
             hasWalls = CheckAssignNeighbor(t, Direction.West, type) || hasWalls;
-            if (hasWalls)
-            {
-                TilesWithWalls.Add(t);
-            }
-            else
-            {
-                TilesWithoutWalls.Add(t);
-            }
+            // if (hasWalls)
+            // {
+            //     if (!TilesWithWalls.Contains(t))
+            //     {
+            //         TilesWithWalls.Add(t);
+            //     }
+            //     if (TilesWithoutWalls.Contains(t))
+            //     {
+            //         TilesWithoutWalls.Remove(t);
+            //     }
+            // }
+            // else
+            // {
+            //     if (!TilesWithoutWalls.Contains(t))
+            //     {
+            //         TilesWithoutWalls.Add(t);
+            //     }
+            //     if (TilesWithWalls.Contains(t))
+            //     {
+            //         TilesWithWalls.Remove(t);
+            //     }
+            // }
         }
     }
 
