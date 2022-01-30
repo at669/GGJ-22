@@ -134,7 +134,7 @@ public class MapGenerator : MonoBehaviour
 
         if (keepRoom)
         {
-            initRoom = GenerateRoom(initBottomLeft, Vector2.zero, PlayerManager.Instance.currentSpace.Rect.size, (RoomType)Order[OrderIdx]);
+            initRoom = GenerateRoom(initBottomLeft, Vector2.zero, PlayerManager.Instance.currentSpace.Rect.size, ((Room)PlayerManager.Instance.currentSpace).RoomType);
         }
         else
         {
@@ -146,14 +146,16 @@ public class MapGenerator : MonoBehaviour
         Player.TeleportPlayer(playerSpawnPos);
         Rooms.Add(initRoom);
 
-        // // goal is lobby
-        // if (!keepRoom)
-        // {
-        //     PlayerManager.Instance.GoalRoom = initRoom;
-        //     PlayerManager.Instance.GoalCharacter = initRoom.Character;
-        //     PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
-        //     ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
-        // }
+        // goal is lobby
+        if (!keepRoom)
+        {
+            OrderIdx = -1;
+            // PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+            PlayerManager.Instance.GoalRoom = initRoom;
+            PlayerManager.Instance.GoalCharacter = initRoom.Character;
+            PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
+            ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
+        }
 
         // Generate first hall
 
@@ -192,6 +194,11 @@ public class MapGenerator : MonoBehaviour
         }
         Halls.Add(initHall);
 
+        // if (keepRoom)
+        // {
+        //     numRooms -= 1;
+        // }
+
         for (int i = 1; i < numRooms; i++)
         {
             // Generate second room
@@ -206,17 +213,26 @@ public class MapGenerator : MonoBehaviour
                 return false;
             }
             hallTile.AssignDoorAt(doorWall);
-            // TODO: get bounds for second room based on attempted bottom left + range + clamp based on existing map
             // Find bottom left corner of next room
             (var bottomLeft, var range) = GetBottomLeftCorner(hallTile, doorWall);
-            var room1 = GenerateRoom(bottomLeft, range, Vector2.zero, (RoomType)Order[i - 1], doorWall.GetOpposite(), hallTile);
-            // if (Rooms.Count == PlayerManager.Instance.GoalRoomIdx && !keepRoom)
-            if (Rooms.Count == PlayerManager.Instance.GoalRoomIdx)
+            Room room1;
+            int roomCountIdx = Rooms.Count;
+            if (i == 1 && keepRoom && OrderIdx == 1)
+            {
+                room1 = GenerateRoom(bottomLeft, range, Vector2.zero, RoomType.Lobby, doorWall.GetOpposite(), hallTile);
+                roomCountIdx -= 1;
+            }
+            else
+            {
+                room1 = GenerateRoom(bottomLeft, range, Vector2.zero, (RoomType)Order[i - 1], doorWall.GetOpposite(), hallTile);
+            }
+
+            // var room1 = GenerateRoom(bottomLeft, range, Vector2.zero, (RoomType)Order[i - 1], doorWall.GetOpposite(), hallTile);
+            if (roomCountIdx == PlayerManager.Instance.GoalRoomIdx && keepRoom)
             {
                 PlayerManager.Instance.GoalRoom = room1;
                 PlayerManager.Instance.GoalCharacter = room1.Character;
                 PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
-                // ArrowManager.target = hallTile.transform.position + new Vector3(0, 0.2f, 0);
                 ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
             }
             Rooms.Add(room1);
@@ -567,19 +583,7 @@ public class MapGenerator : MonoBehaviour
 
     public void IncrementGoal()
     {
-        // if (OrderIdx == 0)
-        // {
-        //     PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
-        //     PlayerManager.Instance.GoalRoom = Rooms[PlayerManager.Instance.GoalRoomIdx];
-        //     PlayerManager.Instance.GoalCharacter = Rooms[PlayerManager.Instance.GoalRoomIdx].Character;
-        //     PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
-        //     ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
-        //     return;
-        // }
-        // else
-        // {
-            OrderIdx += 1;
-        // }
+        OrderIdx += 1;
 
         if (Order.Count <= OrderIdx)
         {

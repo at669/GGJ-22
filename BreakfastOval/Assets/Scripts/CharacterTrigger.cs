@@ -19,13 +19,13 @@ public class CharacterTrigger : MonoBehaviour
                 // TODO
                 if (IsGoal)
                 {
-                    Debug.Log("interacting with goal!");
+                    Debug.Log($"interacting with goal {transform.parent}!");
                     IsGoal = false;
                     MapGenerator.Instance.IncrementGoal();
                 }
                 else
                 {
-                    Debug.Log("interacting but not goal");
+                    Debug.Log($"interacting {transform.parent} but not goal");
                 }
             }
         }
