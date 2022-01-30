@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class MapGenerator : MonoBehaviour
 {
+    public static List<int> Order;
+    public static int OrderIdx = 0;
     public PlayerManager Player;
     public static Vector3 playerSpawnPos = Vector3.zero;
     public int[] initialRoomSize = new int[2];
@@ -100,14 +102,13 @@ public class MapGenerator : MonoBehaviour
     {
         var origPlayerSpace = PlayerManager.Instance.currentSpace;
         var origPlayerDoorTile = PlayerManager.Instance.currentDoorTile;
-        var order = Extensions.RandomOrder(numRooms - 1);
-        for (int i = 0; i < order.Count; i++)
+        Order = Extensions.RandomOrder(numRooms - 1);
+        for (int i = 0; i < Order.Count; i++)
         {
-            order[i]++;
+            Order[i]++;
         }
-        // Debug.Log($"order of gen");
-        // order.ForEach(i => Debug.Log((RoomType)i));
-        PlayerManager.Instance.GoalRoomIdx = order[0];
+        OrderIdx = 0;
+        PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
 
         // Generate current room
         // Find bottom left corner of current room
@@ -116,7 +117,7 @@ public class MapGenerator : MonoBehaviour
 
         if (keepRoom)
         {
-            initRoom = GenerateRoom(initBottomLeft, Vector2.zero, PlayerManager.Instance.currentSpace.Rect.size, (RoomType)order[0]);
+            initRoom = GenerateRoom(initBottomLeft, Vector2.zero, PlayerManager.Instance.currentSpace.Rect.size, (RoomType)Order[OrderIdx]);
         }
         else
         {
@@ -182,11 +183,14 @@ public class MapGenerator : MonoBehaviour
             // TODO: get bounds for second room based on attempted bottom left + range + clamp based on existing map
             // Find bottom left corner of next room
             (var bottomLeft, var range) = GetBottomLeftCorner(hallTile, doorWall);
-            var room1 = GenerateRoom(bottomLeft, range, Vector2.zero, (RoomType)order[i - 1], doorWall.GetOpposite(), hallTile);
+            var room1 = GenerateRoom(bottomLeft, range, Vector2.zero, (RoomType)Order[i - 1], doorWall.GetOpposite(), hallTile);
             if (Rooms.Count == PlayerManager.Instance.GoalRoomIdx)
             {
                 PlayerManager.Instance.GoalRoom = room1;
-                ArrowManager.target = hallTile.transform.position + new Vector3(0, 0.2f, 0);
+                PlayerManager.Instance.GoalCharacter = room1.Character;
+                PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
+                // ArrowManager.target = hallTile.transform.position + new Vector3(0, 0.2f, 0);
+                ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
             }
             Rooms.Add(room1);
 
@@ -435,7 +439,7 @@ public class MapGenerator : MonoBehaviour
         bool tryCenter = true;
         for (int i = 0; i < MAX_ITER; i++)
         {
-            if (GenerateCharacter(room.RoomType, room.SelectCharacterTile(tryCenter)))
+            if (GenerateCharacter(room, room.RoomType, room.SelectCharacterTile(tryCenter)))
             {
                 break;
             }
@@ -446,11 +450,10 @@ public class MapGenerator : MonoBehaviour
 
         (var wallFurnTile, var wallFurnName) = room.SelectFurnitureTiles(FurnitureType.Wall);
         GenerateFurniture(room.RoomType, wallFurnTile, wallFurnName);
-        // GenerateFurniture(room.RoomType, room.SelectMiddleFurnitureTiles(1));
         return room;
     }
 
-    static bool GenerateCharacter(RoomType type, Tile tile)
+    static bool GenerateCharacter(Room room, RoomType type, Tile tile)
     {
         if (tile == null)
         {
@@ -458,6 +461,7 @@ public class MapGenerator : MonoBehaviour
         }
         var obj = Resources.Load<GameObject>($"Characters/{type}");
         var inst = Instantiate(obj, new Vector3(tile.Coord.x, 0.25f, tile.Coord.y), Quaternion.identity, tile.transform);
+        room.Character = inst;
         return true;
     }
 
@@ -529,5 +533,24 @@ public class MapGenerator : MonoBehaviour
         {
             return null;
         }
+    }
+
+    public static void IncrementGoal()
+    {
+        OrderIdx += 1;
+
+        if (Order.Count <= OrderIdx)
+        {
+            Debug.Log("end game!");
+            ArrowManager.Instance.gameObject.SetActive(false);
+            return;
+        }
+
+        PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+        PlayerManager.Instance.GoalRoom = Rooms[PlayerManager.Instance.GoalRoomIdx];
+        PlayerManager.Instance.GoalCharacter = PlayerManager.Instance.GoalRoom.Character;
+        PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
+        // ArrowManager.target = hallTile.transform.position + new Vector3(0, 0.2f, 0);
+        ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
     }
 }

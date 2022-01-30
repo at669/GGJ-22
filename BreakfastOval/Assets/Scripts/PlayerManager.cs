@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     public Room GoalRoom;
+    public GameObject GoalCharacter;
     public int GoalRoomIdx;
     static PlayerManager _instance;
     public static PlayerManager Instance

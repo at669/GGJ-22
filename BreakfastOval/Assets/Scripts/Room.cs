@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Room : Space
 {
+    public GameObject Character;
     public static Quaternion[] FurnitureRotations = new Quaternion[]
     {
         Quaternion.identity, Quaternion.Euler(0, 90, 0), Quaternion.Euler(0, 180, 0), Quaternion.Euler(0, 270, 0)

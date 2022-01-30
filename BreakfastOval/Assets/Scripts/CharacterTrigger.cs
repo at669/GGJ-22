@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Collider))]
 public class CharacterTrigger : MonoBehaviour
 {
+    public bool IsGoal = false;
     bool canInteract = false;
 
     // Update is called once per frame
@@ -15,8 +16,17 @@ public class CharacterTrigger : MonoBehaviour
         {
             if (Keyboard.current.enterKey.wasPressedThisFrame)
             {
-                Debug.Log("interacting!");
                 // TODO
+                if (IsGoal)
+                {
+                    Debug.Log("interacting with goal!");
+                    IsGoal = false;
+                    MapGenerator.IncrementGoal();
+                }
+                else
+                {
+                    Debug.Log("interacting but not goal");
+                }
             }
         }
     }

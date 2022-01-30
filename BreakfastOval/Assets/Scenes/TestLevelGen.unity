@@ -451,7 +451,7 @@ MonoBehaviour:
   KEEP_CURRENT_ROOM: 1
   MAX_ITER: 50
   worldSize: 4b0000004b000000
-  numRooms: 2
+  numRooms: 3
   hallLength: 030000000a000000
   roomMinSize: 0300000003000000
   roomMaxSize: 0600000006000000
@@ -662,6 +662,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e71454d85a7cd4e40a1278c6951842b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GoalCharacter: {fileID: 0}
   GoalRoomIdx: 0
   currentDoorTile: {fileID: 0}
   currentDoorDir: 0
