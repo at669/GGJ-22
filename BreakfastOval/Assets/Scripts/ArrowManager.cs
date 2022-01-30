@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ArrowManager : MonoBehaviour
 {
+    public static Vector3 target;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -13,6 +15,6 @@ public class ArrowManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        transform.LookAt(target);
     }
 }

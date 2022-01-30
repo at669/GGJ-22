@@ -279,7 +279,7 @@ public static class Extensions
             counter.RemoveAt(rand);
         }
 
-        Debug.Log($"randomized {String.Join(", ", res)}");
+        // Debug.Log($"randomized {String.Join(", ", res)}");
         return res;
     }
 }

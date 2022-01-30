@@ -25,5 +25,10 @@ public class DoorTrigger : MonoBehaviour
         {
             PlayerManager.Instance.currentSpace = space;
         }
+
+        if (space == PlayerManager.Instance.GoalRoom)
+        {
+            Debug.Log($"entered goal room!");
+        }
     }
 }

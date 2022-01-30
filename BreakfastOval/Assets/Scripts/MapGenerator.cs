@@ -49,6 +49,9 @@ public class MapGenerator : MonoBehaviour
     void OnDrawGizmos() {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireCube(new Vector3(worldSize[0] / 2, 0, worldSize[1] / 2), new Vector3(worldSize[0], 0.1f, worldSize[1]));
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(ArrowManager.target, 0.5f);
     }
 
     // Update is called once per frame
@@ -94,7 +97,8 @@ public class MapGenerator : MonoBehaviour
     {
         var origPlayerSpace = PlayerManager.Instance.currentSpace;
         var origPlayerDoorTile = PlayerManager.Instance.currentDoorTile;
-        var order = Extensions.RandomOrder(numRooms);
+        var order = Extensions.RandomOrder(numRooms - 1);
+        PlayerManager.Instance.GoalRoomIdx = order[0] + 1;
 
         // Generate current room
         // Find bottom left corner of current room
@@ -169,6 +173,11 @@ public class MapGenerator : MonoBehaviour
             // Find bottom left corner of next room
             (var bottomLeft, var range) = GetBottomLeftCorner(hallTile, doorWall);
             var room1 = GenerateRoom(bottomLeft, range, Vector2.zero, doorWall.GetOpposite(), hallTile);
+            if (Rooms.Count == PlayerManager.Instance.GoalRoomIdx)
+            {
+                PlayerManager.Instance.GoalRoom = room1;
+                ArrowManager.target = hallTile.transform.position + new Vector3(0, 0.2f, 0);
+            }
             Rooms.Add(room1);
 
             if (i == numRooms - 1)
