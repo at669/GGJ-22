@@ -61,15 +61,15 @@ public class Room : Space
     public static Dictionary<RoomType, string[]> MiddleFurnitureNames = new Dictionary<RoomType, string[]>
     {
         { RoomType.Lobby, new string[] { "Desk" } },
-        { RoomType.Kitchen, new string[] { "Cube" } },
-        { RoomType.IT, new string[] { "Cube", "Desk" } },
-        { RoomType.HR, new string[] { "Cube", "Desk" } },
-        { RoomType.Engineering, new string[] { "Cube", "Desk" } },
-        { RoomType.Marketing, new string[] { "Cube", "Desk" } },
-        { RoomType.Finance, new string[] { "Cube", "Desk" } },
-        { RoomType.Bathroom, new string[] { "Cube" } },
-        { RoomType.Custodial, new string[] { "Cube" } },
-        { RoomType.Security, new string[] { "Cube", "Desk" } },
+        { RoomType.Kitchen, new string[] { } },
+        { RoomType.IT, new string[] { "Desk" } },
+        { RoomType.HR, new string[] { "Desk" } },
+        { RoomType.Engineering, new string[] { "Desk" } },
+        { RoomType.Marketing, new string[] { "Desk" } },
+        { RoomType.Finance, new string[] { "Desk" } },
+        { RoomType.Bathroom, new string[] { } },
+        { RoomType.Custodial, new string[] { } },
+        { RoomType.Security, new string[] { "Desk" } },
     };
     public static Dictionary<RoomType, string[]> AnyFurnitureNames = new Dictionary<RoomType, string[]>
     {
@@ -81,7 +81,7 @@ public class Room : Space
         { RoomType.Marketing, new string[] {} },
         { RoomType.Finance, new string[] {} },
         { RoomType.Bathroom, new string[] {} },
-        { RoomType.Custodial, new string[] {} },
+        { RoomType.Custodial, new string[] { "Table" } },
         { RoomType.Security, new string[] {} },
     };
     public RoomType RoomType;
