@@ -43,7 +43,6 @@ public class InteractionManager : MonoBehaviour
     public void ButtonClick(int val)
     {
         Debug.Log($"Button {val}");
-        PlayerManager.Instance.ToggleController(true);
-        Cursor.visible = false;
+        ShowPanel(false);
     }
 }

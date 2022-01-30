@@ -46,6 +46,7 @@ public class CharacterTrigger : MonoBehaviour
                 {
                     Debug.Log($"interacting {transform.parent} but not goal");
                     InteractionManager.Instance.ShowPanel(true);
+                    canInteract = false;
                 }
             }
         }
