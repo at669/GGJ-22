@@ -53,7 +53,6 @@ public class MapGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("starting map generator");
         RoomMinX = roomMinSize[0];
         RoomMinY = roomMinSize[1];
         RoomMaxX = roomMaxSize[0];
@@ -544,7 +543,7 @@ public class MapGenerator : MonoBehaviour
             var obj = Resources.Load<GameObject>($"{type}/{furnitureNames[i]}");
             if (tiles[i].Walls.Count > 0)
             {
-                var wall = tiles[i].Walls[i];
+                var wall = tiles[i].Walls[0];
                 var rel = wall.GetOpposite();
                 Instantiate(obj, new Vector3(tiles[i].Coord.x, 0, tiles[i].Coord.y), rel.GetRotationFromDirection(), tiles[i].transform);
             }
@@ -552,7 +551,6 @@ public class MapGenerator : MonoBehaviour
             {
                 Instantiate(obj, new Vector3(tiles[i].Coord.x, 0, tiles[i].Coord.y), Extensions.RandomRightAngleRotation(), tiles[i].transform);
             }
-            // var inst = Instantiate(obj, new Vector3(tiles[i].Coord.x, 0, tiles[i].Coord.y), Extensions.RandomRightAngleRotation(), tiles[i].transform);
         }
     }
 
