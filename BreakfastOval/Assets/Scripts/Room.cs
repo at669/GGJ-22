@@ -44,20 +44,6 @@ public class Room : Space
             Debug.Log($"grabbing tile {resTiles[resTiles.Count - 1]} for furniture placement withi object {resFurniture[resFurniture.Count - 1]}");
         }
 
-        // switch (RoomType)
-        // {
-        //     case RoomType.Lobby:
-        //         break;
-        //     case RoomType.Kitchen:
-        //         break;
-        //     case RoomType.IT:
-        //         break;
-        //     case RoomType.Bathroom:
-        //         break;
-        //     case RoomType.Broom:
-        //         break;
-        // }
-
         return (resTiles, resFurniture);
     }
 
@@ -67,23 +53,4 @@ public class Room : Space
         int rand = Random.Range(0, spaces.Count);
         return spaces[rand];
     }
-
-    // public List<Tile> SelectWallFurnitureTiles()
-    // {
-    //     switch (RoomType)
-    //     {
-    //         case RoomType.Lobby:
-    //             break;
-    //         case RoomType.Kitchen:
-    //             break;
-    //         case RoomType.IT:
-    //             break;
-    //         case RoomType.Bathroom:
-    //             break;
-    //         case RoomType.Broom:
-    //             break;
-    //     }
-
-    //     return null;
-    // }
 }

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-// using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.InputSystem;
 
 public class MapGenerator : MonoBehaviour
@@ -105,7 +104,6 @@ public class MapGenerator : MonoBehaviour
         for (int i = 0; i < order.Count; i++)
         {
             order[i]++;
-            Debug.Log($"{i} = {(RoomType)order[i]}");
         }
         // Debug.Log($"order of gen");
         // order.ForEach(i => Debug.Log((RoomType)i));
