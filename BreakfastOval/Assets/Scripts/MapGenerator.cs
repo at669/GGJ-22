@@ -29,7 +29,7 @@ public class MapGenerator : MonoBehaviour
     public int[] initialRoomSize = new int[2];
     public bool KEEP_CURRENT_ROOM = true;
     public int MAX_ITER = 100;
-    public float CHANCE_WALL = 0.2f;
+    public float CHANCE_WALLART = 0.2f;
     public int[] worldSize = new int[2];
     public static Tile[,] Map;
     public int numRooms;
@@ -547,7 +547,6 @@ public class MapGenerator : MonoBehaviour
         {
             return false;
         }
-        // var obj = Resources.Load<GameObject>($"Characters/{type}");
         var obj = Resources.Load<GameObject>($"Characters/{Room.RoomTypeToCharacter[type]}");
         var inst = Instantiate(obj, new Vector3(tile.Coord.x, 0.25f, tile.Coord.y), Quaternion.identity, tile.transform);
         room.Character = inst;

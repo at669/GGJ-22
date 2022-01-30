@@ -35,16 +35,13 @@ public class CharacterTrigger : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Return))
             {
                 ToggleCanvas(false);
-                // TODO
                 if (IsGoal)
                 {
-                    Debug.Log($"interacting with goal {transform.parent}!");
                     IsGoal = false;
                     MapGenerator.Instance.IncrementGoal();
                 }
                 else
                 {
-                    Debug.Log($"interacting {transform.parent} but not goal");
                     InteractionManager.Instance.ShowPanel(true);
                     canInteract = false;
                 }
