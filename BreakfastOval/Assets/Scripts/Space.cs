@@ -116,4 +116,19 @@ public abstract class Space
     {
         return Tiles.Where(t => t.Coord ==  coord).Count() > 0;
     }
+
+    public List<Tile> GetUnoccupiedMiddleTiles()
+    {
+        return TilesWithoutWalls.Where(t => !t.occupied).ToList();
+    }
+
+    public List<Tile> GetUnoccupiedWallTiles()
+    {
+        return TilesWithWalls.Where(t => !t.occupied).ToList();
+    }
+
+    public List<Tile> GetAllUnoccupiedTiles()
+    {
+        return Tiles.Where(t => !t.occupied).ToList();
+    }
 }

@@ -10,10 +10,6 @@ public class DoorTrigger : MonoBehaviour
     void Awake()
     {
         tile = transform.parent.GetComponent<Tile>();
-        // if (tile.GetSpace() == PlayerManager.Instance.currentSpace)
-        // {
-        //     PlayerManager.Instance.currentDoorDir = tile.Doors[0];
-        // }
     }
 
     void OnTriggerEnter(Collider other)

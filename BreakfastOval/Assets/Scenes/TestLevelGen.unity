@@ -429,7 +429,7 @@ MonoBehaviour:
   Player: {fileID: 1726685239}
   initialRoomSize: 0400000004000000
   KEEP_CURRENT_ROOM: 1
-  MAX_ITER: 20
+  MAX_ITER: 50
   worldSize: 4b0000004b000000
   numRooms: 3
   hallLength: 030000000a000000

@@ -17,18 +17,11 @@ public class PlayerManager : MonoBehaviour
             }
             return _instance;
         }
-        // private set;
     }
     public Space currentSpace;
     public Tile currentDoorTile;
     public Direction currentDoorDir;
     public Vector3 bottomLeftOffset;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
 
     // Update is called once per frame
     void Update()
