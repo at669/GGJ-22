@@ -18,6 +18,9 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    public static List<int> CharacterOrder;
+    public static int CharacterOrderIdx = 0;
+
     public static List<int> Order;
     public static int OrderIdx = 0;
     public PlayerManager Player;
@@ -505,7 +508,8 @@ public class MapGenerator : MonoBehaviour
         {
             return false;
         }
-        var obj = Resources.Load<GameObject>($"Characters/{type}");
+        // var obj = Resources.Load<GameObject>($"Characters/{type}");
+        var obj = Resources.Load<GameObject>($"Characters/{Room.RoomTypeToCharacter[type]}");
         var inst = Instantiate(obj, new Vector3(tile.Coord.x, 0.25f, tile.Coord.y), Quaternion.identity, tile.transform);
         room.Character = inst;
         return true;

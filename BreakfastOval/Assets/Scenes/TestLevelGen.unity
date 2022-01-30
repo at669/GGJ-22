@@ -440,10 +440,10 @@ MonoBehaviour:
   MAX_ITER: 50
   CHANCE_WALL: 0.2
   worldSize: 3200000032000000
-  numRooms: 3
+  numRooms: 5
   hallLength: 030000000a000000
   roomMinSize: 0300000003000000
-  roomMaxSize: 0600000006000000
+  roomMaxSize: 0500000005000000
   tilePrefab: {fileID: 9087579484958466513, guid: d26b2f6ce1e5145dca7a6a730c30820d, type: 3}
 --- !u!1001 &1375147296
 PrefabInstance:

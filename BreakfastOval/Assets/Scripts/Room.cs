@@ -12,6 +12,21 @@ public class Room : Space
     };
     public const int FURNITURE_RATE = 6;
     public const int LIGHT_RATE = 8;
+
+    public static string[] CharacterNames = new string[]
+    {
+        "Bird", "Bunny", "Cat", "Dog", "Frog", "Lion", "Mouse", "Penguin", "Pig", "Tanuki"
+    };
+
+    public static Dictionary<RoomType, string> RoomTypeToCharacter = new Dictionary<RoomType, string>
+    {
+        { RoomType.Lobby, "Bird" },
+        { RoomType.Kitchen, "Bunny" },
+        { RoomType.IT, "Cat" },
+        { RoomType.Bathroom, "Dog" },
+        { RoomType.Broom, "Frog" }
+    };
+
     public static Dictionary<RoomType, string[]> CeilingFurnitureNames = new Dictionary<RoomType, string[]>
     {
         { RoomType.Lobby, new string[] { }},
