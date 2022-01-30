@@ -48,15 +48,15 @@ public class Room : Space
     public static Dictionary<RoomType, string[]> WallFurnitureNames = new Dictionary<RoomType, string[]>
     {
         { RoomType.Lobby, new string[] { "LightStand" } },
-        { RoomType.Kitchen, new string[] { "LightStand" } },
-        { RoomType.IT, new string[] { "LightStand" } },
-        { RoomType.HR, new string[] { "LightStand" } },
-        { RoomType.Engineering, new string[] { "LightStand" } },
-        { RoomType.Marketing, new string[] { "LightStand" } },
-        { RoomType.Finance, new string[] { "LightStand" } },
-        { RoomType.Bathroom, new string[] { "LightStand" } },
+        { RoomType.Kitchen, new string[] { "LightStand", "Cabinet", "Drawers" } },
+        { RoomType.IT, new string[] { "LightStand", "Drawers" } },
+        { RoomType.HR, new string[] { "LightStand", "Drawers" } },
+        { RoomType.Engineering, new string[] { "LightStand", "Drawers" } },
+        { RoomType.Marketing, new string[] { "LightStand", "Drawers" } },
+        { RoomType.Finance, new string[] { "LightStand", "Drawers" } },
+        { RoomType.Bathroom, new string[] { "LightStand", "Drawers" } },
         { RoomType.Custodial, new string[] { "LightStand" } },
-        { RoomType.Security, new string[] { "LightStand" } },
+        { RoomType.Security, new string[] { "LightStand", "Drawers" } },
     };
     public static Dictionary<RoomType, string[]> MiddleFurnitureNames = new Dictionary<RoomType, string[]>
     {

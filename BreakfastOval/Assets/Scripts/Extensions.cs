@@ -110,6 +110,23 @@ public static class Extensions
         }
     }
 
+    public static Quaternion GetRotationFromDirection(this Direction dir)
+    {
+        switch (dir)
+        {
+            case Direction.North:
+                return Quaternion.identity;
+            case Direction.East:
+                return Quaternion.Euler(0, 90, 0);
+            case Direction.South:
+                return Quaternion.Euler(0, 180, 0);
+            case Direction.West:
+                return Quaternion.Euler(0, 270, 0);
+            default:
+                return Quaternion.identity;
+        }
+    }
+
     public static Direction RandomDirection(this Direction fromDir)
     {
         var dir = AllDirections();
