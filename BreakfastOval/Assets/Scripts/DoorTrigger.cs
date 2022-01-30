@@ -5,15 +5,13 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class DoorTrigger : MonoBehaviour
 {
+    public bool ShouldRegenOnEnter = false;
+
     Tile tile;
 
     void Awake()
     {
         tile = transform.parent.GetComponent<Tile>();
-        // if (tile.GetSpace() == PlayerManager.Instance.currentSpace)
-        // {
-        //     PlayerManager.Instance.currentDoorDir = tile.Doors[0];
-        // }
     }
 
     void OnTriggerEnter(Collider other)
@@ -26,9 +24,10 @@ public class DoorTrigger : MonoBehaviour
             PlayerManager.Instance.currentSpace = space;
         }
 
-        if (space == PlayerManager.Instance.GoalRoom)
+        if (ShouldRegenOnEnter)
         {
-            Debug.Log($"entered goal room!");
+            MapGenerator.Instance.Generate(true);
+            ShouldRegenOnEnter = false;
         }
     }
 }

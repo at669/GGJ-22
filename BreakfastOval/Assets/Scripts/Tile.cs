@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
+    public bool occupied = false;
     public TileType TileType;
     public Vector2 Coord;
     public List<Direction> Doors = new List<Direction>();
@@ -28,6 +29,7 @@ public class Tile : MonoBehaviour
 
     public void AssignDoorAt(Direction dir, bool first = true)
     {
+        occupied = true;
         var wallObj = GetWallObject(dir);
         DoorTrigger.gameObject.SetActive(true);
         var wallRend = wallObj.GetComponent<Renderer>();
