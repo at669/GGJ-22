@@ -12,37 +12,77 @@ public class Room : Space
     };
     public const int FURNITURE_RATE = 6;
     public const int LIGHT_RATE = 8;
+
+    public static string[] CharacterNames = new string[]
+    {
+        "Bird", "Bunny", "Cat", "Dog", "Frog", "Lion", "Mouse", "Penguin", "Pig", "Tanuki"
+    };
+
+    public static Dictionary<RoomType, string> RoomTypeToCharacter = new Dictionary<RoomType, string>
+    {
+        { RoomType.Lobby, "Bird" },
+        { RoomType.Kitchen, "Bunny" },
+        { RoomType.IT, "Cat" },
+        { RoomType.HR, "Dog" },
+        { RoomType.Engineering, "Lion" },
+        { RoomType.Marketing, "Mouse" },
+        { RoomType.Finance, "Penguin" },
+        { RoomType.Bathroom, "Pig" },
+        { RoomType.Custodial, "Frog" },
+        { RoomType.Security, "Tanuki"},
+    };
+
     public static Dictionary<RoomType, string[]> CeilingFurnitureNames = new Dictionary<RoomType, string[]>
     {
-        { RoomType.Lobby, new string[] { }},
-        { RoomType.Kitchen, new string[] { }},
-        { RoomType.IT, new string[] { }},
-        { RoomType.Bathroom, new string[] { }},
-        { RoomType.Broom, new string[] { }}
+        { RoomType.Lobby, new string[] {} },
+        { RoomType.Kitchen, new string[] {} },
+        { RoomType.IT, new string[] {} },
+        { RoomType.HR, new string[] {} },
+        { RoomType.Engineering, new string[] {} },
+        { RoomType.Marketing, new string[] {} },
+        { RoomType.Finance, new string[] {} },
+        { RoomType.Bathroom, new string[] {} },
+        { RoomType.Custodial, new string[] {} },
+        { RoomType.Security, new string[] {} },
     };
     public static Dictionary<RoomType, string[]> WallFurnitureNames = new Dictionary<RoomType, string[]>
     {
-        { RoomType.Lobby, new string[] { "Cylinder" }},
-        { RoomType.Kitchen, new string[] { "Cylinder" }},
-        { RoomType.IT, new string[] { "Cylinder" }},
-        { RoomType.Bathroom, new string[] { "Cylinder" }},
-        { RoomType.Broom, new string[] { "Cylinder" }}
+        { RoomType.Bathroom, new string[] { "LightStand", "BathroomCabinet", "Stalls" } },
+        { RoomType.Custodial, new string[] { "LightStand" } },
+        { RoomType.Engineering, new string[] { "LightStand", "Drawers" } },
+        { RoomType.Finance, new string[] { "LightStand", "Drawers" } },
+        { RoomType.Lobby, new string[] { "LightStand" } },
+        { RoomType.HR, new string[] { "LightStand", "Drawers" } },
+        { RoomType.IT, new string[] { "LightStand", "Drawers" } },
+        { RoomType.Kitchen, new string[] { "LightStand", "Cabinet", "Drawers", "Fridge" } },
+        { RoomType.Marketing, new string[] { "LightStand", "Drawers" } },
+        { RoomType.Security, new string[] { "LightStand", "Drawers" } }
     };
     public static Dictionary<RoomType, string[]> MiddleFurnitureNames = new Dictionary<RoomType, string[]>
     {
-        { RoomType.Lobby, new string[] { "Cube" }},
-        { RoomType.Kitchen, new string[] { "Cube" }},
-        { RoomType.IT, new string[] { "Cube" }},
-        { RoomType.Bathroom, new string[] { "Cube" }},
-        { RoomType.Broom, new string[] { "Cube" }}
+        { RoomType.Lobby, new string[] { "Desk" } },
+        { RoomType.Kitchen, new string[] { } },
+        { RoomType.IT, new string[] { "Desk" } },
+        { RoomType.HR, new string[] { "Desk" } },
+        { RoomType.Engineering, new string[] { "Desk" } },
+        { RoomType.Marketing, new string[] { "Desk" } },
+        { RoomType.Finance, new string[] { "Desk" } },
+        { RoomType.Bathroom, new string[] { } },
+        { RoomType.Custodial, new string[] { } },
+        { RoomType.Security, new string[] { "Desk" } },
     };
     public static Dictionary<RoomType, string[]> AnyFurnitureNames = new Dictionary<RoomType, string[]>
     {
-        { RoomType.Lobby, new string[] { }},
-        { RoomType.Kitchen, new string[] { }},
-        { RoomType.IT, new string[] { }},
-        { RoomType.Bathroom, new string[] { }},
-        { RoomType.Broom, new string[] { }}
+        { RoomType.Lobby, new string[] {} },
+        { RoomType.Kitchen, new string[] { "KitchenTable" } },
+        { RoomType.IT, new string[] {} },
+        { RoomType.HR, new string[] {} },
+        { RoomType.Engineering, new string[] {} },
+        { RoomType.Marketing, new string[] {} },
+        { RoomType.Finance, new string[] {} },
+        { RoomType.Bathroom, new string[] {} },
+        { RoomType.Custodial, new string[] { "Table" } },
+        { RoomType.Security, new string[] {} },
     };
     public RoomType RoomType;
     public Vector2 Size;
@@ -101,14 +141,18 @@ public class Room : Space
     {
         var spaces = GetUnoccupiedSpaceByType(type);
         var furnOptions = GetFurnitureOptionsByType(type);
+        var resTiles = new List<Tile>();
+        var resFurniture = new List<string>();
+        if (furnOptions.Count == 0)
+        {
+            return (resTiles, resFurniture);
+        }
         // Generate number based on available tiles
         if (num == -1)
         {
             num = Mathf.Max(1, Mathf.CeilToInt(spaces.Count / FURNITURE_RATE));
         }
 
-        var resTiles = new List<Tile>();
-        var resFurniture = new List<string>();
         var order = Extensions.RandomOrder(num);
         for (int i = 0; i < num; i++)
         {
