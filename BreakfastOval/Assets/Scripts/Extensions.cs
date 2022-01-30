@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public enum RoomType { Lobby, Kitchen, IT, Bathroom, Broom }
+public enum RoomType { Lobby, Kitchen, IT, HR, Engineering, Marketing, Finance, Bathroom, Custodial, Security }
 public enum Direction { Error, North, East, South, West }
 public enum TileType { Error, Room, Hall, Nothing }
 public enum RelativeDirection { Error, Front, Left, Right, Back }
@@ -107,6 +107,23 @@ public static class Extensions
             else {
                 return options[1];
             }
+        }
+    }
+
+    public static Quaternion GetRotationFromDirection(this Direction dir)
+    {
+        switch (dir)
+        {
+            case Direction.North:
+                return Quaternion.identity;
+            case Direction.East:
+                return Quaternion.Euler(0, 90, 0);
+            case Direction.South:
+                return Quaternion.Euler(0, 180, 0);
+            case Direction.West:
+                return Quaternion.Euler(0, 270, 0);
+            default:
+                return Quaternion.identity;
         }
     }
 

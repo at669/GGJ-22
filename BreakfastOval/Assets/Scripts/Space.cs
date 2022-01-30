@@ -62,11 +62,10 @@ public abstract class Space
     {
         foreach (Tile t in Tiles)
         {
-            bool hasWalls = false;
-            hasWalls = CheckAssignNeighbor(t, Direction.North, type) || hasWalls;
-            hasWalls = CheckAssignNeighbor(t, Direction.East, type) || hasWalls;
-            hasWalls = CheckAssignNeighbor(t, Direction.South, type) || hasWalls;
-            hasWalls = CheckAssignNeighbor(t, Direction.West, type) || hasWalls;
+            CheckAssignNeighbor(t, Direction.North, type);
+            CheckAssignNeighbor(t, Direction.East, type);
+            CheckAssignNeighbor(t, Direction.South, type);
+            CheckAssignNeighbor(t, Direction.West, type);
         }
     }
 
