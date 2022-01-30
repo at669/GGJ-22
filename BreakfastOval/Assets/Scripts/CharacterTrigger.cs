@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+// using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Collider))]
 public class CharacterTrigger : MonoBehaviour
@@ -14,18 +14,20 @@ public class CharacterTrigger : MonoBehaviour
     {
         if (canInteract)
         {
-            if (Keyboard.current.enterKey.wasPressedThisFrame)
+            // if (Keyboard.current.enterKey.wasPressedThisFrame)
+            if (Input.GetKeyDown(KeyCode.Return))
             {
                 // TODO
                 if (IsGoal)
                 {
-                    // Debug.Log($"interacting with goal {transform.parent}!");
+                    Debug.Log($"interacting with goal {transform.parent}!");
                     IsGoal = false;
                     MapGenerator.Instance.IncrementGoal();
                 }
                 else
                 {
-                    // Debug.Log($"interacting {transform.parent} but not goal");
+                    Debug.Log($"interacting {transform.parent} but not goal");
+                    InteractionManager.Instance.ShowPanel(true);
                 }
             }
         }

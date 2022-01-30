@@ -23,41 +23,66 @@ public class Room : Space
         { RoomType.Lobby, "Bird" },
         { RoomType.Kitchen, "Bunny" },
         { RoomType.IT, "Cat" },
-        { RoomType.Bathroom, "Dog" },
-        { RoomType.Broom, "Frog" }
+        { RoomType.HR, "Dog" },
+        { RoomType.Engineering, "Lion" },
+        { RoomType.Marketing, "Mouse" },
+        { RoomType.Finance, "Penguin" },
+        { RoomType.Bathroom, "Pig" },
+        { RoomType.Custodial, "Frog" },
+        { RoomType.Security, "Tanuki"},
     };
 
     public static Dictionary<RoomType, string[]> CeilingFurnitureNames = new Dictionary<RoomType, string[]>
     {
-        { RoomType.Lobby, new string[] { }},
-        { RoomType.Kitchen, new string[] { }},
-        { RoomType.IT, new string[] { }},
-        { RoomType.Bathroom, new string[] { }},
-        { RoomType.Broom, new string[] { }}
+        { RoomType.Lobby, new string[] {} },
+        { RoomType.Kitchen, new string[] {} },
+        { RoomType.IT, new string[] {} },
+        { RoomType.HR, new string[] {} },
+        { RoomType.Engineering, new string[] {} },
+        { RoomType.Marketing, new string[] {} },
+        { RoomType.Finance, new string[] {} },
+        { RoomType.Bathroom, new string[] {} },
+        { RoomType.Custodial, new string[] {} },
+        { RoomType.Security, new string[] {} },
     };
     public static Dictionary<RoomType, string[]> WallFurnitureNames = new Dictionary<RoomType, string[]>
     {
-        { RoomType.Lobby, new string[] { "Cylinder" }},
-        { RoomType.Kitchen, new string[] { "Cylinder" }},
-        { RoomType.IT, new string[] { "Cylinder" }},
-        { RoomType.Bathroom, new string[] { "Cylinder" }},
-        { RoomType.Broom, new string[] { "Cylinder" }}
+        { RoomType.Lobby, new string[] { "Cylinder" } },
+        { RoomType.Kitchen, new string[] { "Cylinder" } },
+        { RoomType.IT, new string[] { "Cylinder" } },
+        { RoomType.HR, new string[] { "Cylinder" } },
+        { RoomType.Engineering, new string[] { "Cylinder" } },
+        { RoomType.Marketing, new string[] { "Cylinder" } },
+        { RoomType.Finance, new string[] { "Cylinder" } },
+        { RoomType.Bathroom, new string[] { "Cylinder" } },
+        { RoomType.Custodial, new string[] { "Cylinder" } },
+        { RoomType.Security, new string[] { "Cylinder" } },
     };
     public static Dictionary<RoomType, string[]> MiddleFurnitureNames = new Dictionary<RoomType, string[]>
     {
-        { RoomType.Lobby, new string[] { "Cube" }},
-        { RoomType.Kitchen, new string[] { "Cube" }},
-        { RoomType.IT, new string[] { "Cube" }},
-        { RoomType.Bathroom, new string[] { "Cube" }},
-        { RoomType.Broom, new string[] { "Cube" }}
+        { RoomType.Lobby, new string[] { "Cube" } },
+        { RoomType.Kitchen, new string[] { "Cube" } },
+        { RoomType.IT, new string[] { "Cube" } },
+        { RoomType.HR, new string[] { "Cube" } },
+        { RoomType.Engineering, new string[] { "Cube" } },
+        { RoomType.Marketing, new string[] { "Cube" } },
+        { RoomType.Finance, new string[] { "Cube" } },
+        { RoomType.Bathroom, new string[] { "Cube" } },
+        { RoomType.Custodial, new string[] { "Cube" } },
+        { RoomType.Security, new string[] { "Cube" } },
     };
     public static Dictionary<RoomType, string[]> AnyFurnitureNames = new Dictionary<RoomType, string[]>
     {
-        { RoomType.Lobby, new string[] { }},
-        { RoomType.Kitchen, new string[] { }},
-        { RoomType.IT, new string[] { }},
-        { RoomType.Bathroom, new string[] { }},
-        { RoomType.Broom, new string[] { }}
+        { RoomType.Lobby, new string[] {} },
+        { RoomType.Kitchen, new string[] {} },
+        { RoomType.IT, new string[] {} },
+        { RoomType.HR, new string[] {} },
+        { RoomType.Engineering, new string[] {} },
+        { RoomType.Marketing, new string[] {} },
+        { RoomType.Finance, new string[] {} },
+        { RoomType.Bathroom, new string[] {} },
+        { RoomType.Custodial, new string[] {} },
+        { RoomType.Security, new string[] {} },
     };
     public RoomType RoomType;
     public Vector2 Size;

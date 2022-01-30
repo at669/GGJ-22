@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityStandardAssets.Characters.FirstPerson;
 
 public class PlayerManager : MonoBehaviour
 {
-    GameObject capsule;
+    FirstPersonController controller;
     bool active = true;
     public Room GoalRoom;
     public GameObject GoalCharacter;
@@ -29,19 +29,25 @@ public class PlayerManager : MonoBehaviour
 
     void Start()
     {
-        capsule = transform.Find("PlayerCapsule").gameObject;
+        controller = GetComponent<FirstPersonController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Keyboard.current.digit2Key.wasPressedThisFrame)
+        // if (Keyboard.current.digit2Key.wasPressedThisFrame)
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             active = !active;
-            capsule.SetActive(active);
+            ToggleController(active);
         }
 
         bottomLeftOffset = transform.position - new Vector3(currentSpace.Rect.xMin, 0, currentSpace.Rect.yMin);
+    }
+
+    public void ToggleController(bool on)
+    {
+        controller.enabled = on;
     }
 
     public void TeleportPlayer(Vector3 pos)

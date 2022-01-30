@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public enum RoomType { Lobby, Kitchen, IT, Bathroom, Broom }
+public enum RoomType { Lobby, Kitchen, IT, HR, Engineering, Marketing, Finance, Bathroom, Custodial, Security }
 public enum Direction { Error, North, East, South, West }
 public enum TileType { Error, Room, Hall, Nothing }
 public enum RelativeDirection { Error, Front, Left, Right, Back }

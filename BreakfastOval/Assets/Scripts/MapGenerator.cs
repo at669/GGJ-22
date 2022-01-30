@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+// using UnityEngine.InputSystem;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -47,10 +48,12 @@ public class MapGenerator : MonoBehaviour
     List<GameObject> m_GeneratedRoomObjects = new List<GameObject>();
     public static List<Room> Rooms = new List<Room>();
     public static List<Hall> Halls = new List<Hall>();
+    bool CanReload = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("starting map generator");
         RoomMinX = roomMinSize[0];
         RoomMinY = roomMinSize[1];
         RoomMaxX = roomMaxSize[0];
@@ -73,13 +76,26 @@ public class MapGenerator : MonoBehaviour
         Gizmos.DrawSphere(ArrowManager.target + Vector3.up * 3, 0.5f);
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawSphere(PlayerManager.Instance.transform.Find("PlayerCapsule").position + Vector3.up * 3, 0.5f);
+        Gizmos.DrawSphere(PlayerManager.Instance.transform.position + Vector3.up * 3, 0.5f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Keyboard.current.digit1Key.wasPressedThisFrame)
+        // if (CanReload && Keyboard.current.digit0Key.wasPressedThisFrame)
+        if (CanReload && Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            Debug.Log("reloading scene...");
+            Rooms = new List<Room>();
+            Halls = new List<Hall>();
+
+            CanReload = false;
+
+			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        // if (Keyboard.current.digit1Key.wasPressedThisFrame)
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             Generate(true);
         }
@@ -93,6 +109,7 @@ public class MapGenerator : MonoBehaviour
             ResetAll();
             if (BeginGeneration(keepRoom))
             {
+                CanReload = true;
                 return;
             }
         }
@@ -145,7 +162,7 @@ public class MapGenerator : MonoBehaviour
             initRoom = GenerateRoom(initBottomLeft, Vector2.zero, Vector2.zero, RoomType.Lobby);
         }
         PlayerManager.Instance.currentSpace = initRoom;
-        playerSpawnPos = new Vector3(initBottomLeft.x, 0, initBottomLeft.y) + PlayerManager.Instance.bottomLeftOffset;
+        playerSpawnPos = new Vector3(initBottomLeft.x, 0.2f, initBottomLeft.y) + PlayerManager.Instance.bottomLeftOffset;
         Player.TeleportPlayer(playerSpawnPos);
         Rooms.Add(initRoom);
 
@@ -235,6 +252,11 @@ public class MapGenerator : MonoBehaviour
             {
                 PlayerManager.Instance.GoalRoom = room1;
                 PlayerManager.Instance.GoalCharacter = room1.Character;
+                if (room1.Character == null)
+                {
+                    Debug.Log("null goal character in room 1?");
+                    return false;
+                }
                 PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
                 ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
             }
@@ -570,6 +592,12 @@ public class MapGenerator : MonoBehaviour
             ManageSingleWall(Direction.South, t, space);
             ManageSingleWall(Direction.East, t, space);
             ManageSingleWall(Direction.West, t, space);
+
+            var arts = t.GetComponentsInChildren<WallArtManager>();
+            foreach (var a in arts)
+            {
+                a.Resolve();
+            }
         }
     }
 
@@ -589,11 +617,20 @@ public class MapGenerator : MonoBehaviour
     {
         OrderIdx += 1;
 
+        // finished cycle
         if (Order.Count <= OrderIdx)
         {
-            Debug.Log("end game!");
-            ArrowManager.Instance.gameObject.SetActive(false);
-            return;
+            Order = Extensions.RandomOrder(numRooms - 1);
+            for (int i = 0; i < Order.Count; i++)
+            {
+                Order[i]++;
+            }
+            OrderIdx = 0;
+            PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+            Generate(true);
+            // Debug.Log("end game!");
+            // ArrowManager.Instance.gameObject.SetActive(false);
+            // return;
         }
 
         PlayerManager.Instance.GoalRoom.GetAllDoorTiles().ForEach(t => t.GetComponentInChildren<DoorTrigger>().ShouldRegenOnEnter = true);
