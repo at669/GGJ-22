@@ -5,15 +5,17 @@ using UnityEngine;
 [RequireComponent(typeof(Renderer))]
 public class WallArtManager : MonoBehaviour
 {
+    Tile tile;
     Renderer renderer;
 
-    void Awake()
+    void OnEnable()
     {
         renderer = GetComponent<Renderer>();
     }
 
     public void Resolve()
     {
-        renderer.enabled = transform.GetComponentInParent<Tile>().Doors.Count == 0 && Random.Range(0f, 1f) < MapGenerator.Instance.CHANCE_WALL;
+        tile = transform.GetComponentInParent<Tile>();
+        renderer.enabled = tile.Doors.Count == 0 && tile.Walls.Count > 0 && Random.Range(0f, 1f) < MapGenerator.Instance.CHANCE_WALL;
     }
 }

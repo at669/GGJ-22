@@ -54,7 +54,7 @@ public class Room : Space
         { RoomType.Lobby, new string[] { "LightStand" } },
         { RoomType.HR, new string[] { "LightStand", "Drawers" } },
         { RoomType.IT, new string[] { "LightStand", "Drawers" } },
-        { RoomType.Kitchen, new string[] { "LightStand", "Cabinet", "Drawers" } },
+        { RoomType.Kitchen, new string[] { "LightStand", "Cabinet", "Drawers", "Fridge" } },
         { RoomType.Marketing, new string[] { "LightStand", "Drawers" } },
         { RoomType.Security, new string[] { "LightStand", "Drawers" } }
     };

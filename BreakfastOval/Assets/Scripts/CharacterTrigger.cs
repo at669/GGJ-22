@@ -1,17 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 // using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Collider))]
 public class CharacterTrigger : MonoBehaviour
 {
+    public string characterName;
+    public string line;
     public GameObject Canvas;
     public bool IsGoal = false;
     bool canInteract = false;
 
     void Start()
     {
+        characterName = transform.parent.name.Substring(0, transform.parent.name.Length - "(Clone)".Length);
+        line = Resources.Load<TextAsset>($"Text/{characterName}").text;
+        Canvas.GetComponentInChildren<TextMeshProUGUI>().SetText(line);
         ToggleCanvas(false);
     }
 

@@ -213,11 +213,6 @@ public class MapGenerator : MonoBehaviour
         }
         Halls.Add(initHall);
 
-        // if (keepRoom)
-        // {
-        //     numRooms -= 1;
-        // }
-
         for (int i = 1; i < numRooms; i++)
         {
             // Generate second room
@@ -246,7 +241,6 @@ public class MapGenerator : MonoBehaviour
                 room1 = GenerateRoom(bottomLeft, range, Vector2.zero, (RoomType)Order[i - 1], doorWall.GetOpposite(), hallTile);
             }
 
-            // var room1 = GenerateRoom(bottomLeft, range, Vector2.zero, (RoomType)Order[i - 1], doorWall.GetOpposite(), hallTile);
             if (roomCountIdx == PlayerManager.Instance.GoalRoomIdx && keepRoom)
             {
                 PlayerManager.Instance.GoalRoom = room1;
@@ -280,6 +274,30 @@ public class MapGenerator : MonoBehaviour
             Halls.Add(hall);
 
             initHall = hall;
+        }
+
+        foreach (var r in Rooms)
+        {
+            foreach (Tile t in r.Tiles)
+            {
+                var arts = t.GetComponentsInChildren<WallArtManager>();
+                foreach (var a in arts)
+                {
+                    a.Resolve();
+                }
+            }
+        }
+
+        foreach (var r in Halls)
+        {
+            foreach (Tile t in r.Tiles)
+            {
+                var arts = t.GetComponentsInChildren<WallArtManager>();
+                foreach (var a in arts)
+                {
+                    a.Resolve();
+                }
+            }
         }
 
         return true;
@@ -484,14 +502,14 @@ public class MapGenerator : MonoBehaviour
                     tile.TileType = TileType.Room;
                     room.AddTile(tile);
 
-                    // Generate light
-                    if (first)
-                    {
-                        var lightObj = new GameObject("Point Light");
-                        lightObj.transform.parent = tileObj.transform;
-                        GenerateLight(lightObj, new Vector3(tile.Coord.x + 2, 2.5f, tile.Coord.y + 2));
-                        first = false;
-                    }
+                    // // Generate light
+                    // if (first)
+                    // {
+                    //     var lightObj = new GameObject("Point Light");
+                    //     lightObj.transform.parent = tileObj.transform;
+                    //     GenerateLight(lightObj, new Vector3(tile.Coord.x + 2, 2.5f, tile.Coord.y + 2));
+                    //     first = false;
+                    // }
 
                     if (tile.Coord == doorTileCoord && doorWall != Direction.Error)
                     {
@@ -600,12 +618,6 @@ public class MapGenerator : MonoBehaviour
             ManageSingleWall(Direction.South, t, space);
             ManageSingleWall(Direction.East, t, space);
             ManageSingleWall(Direction.West, t, space);
-
-            var arts = t.GetComponentsInChildren<WallArtManager>();
-            foreach (var a in arts)
-            {
-                a.Resolve();
-            }
         }
     }
 
