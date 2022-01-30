@@ -7,6 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class CharacterTrigger : MonoBehaviour
 {
+    bool showLobby = true;
     public string characterName;
     public string line;
     public GameObject Canvas;
@@ -16,13 +17,24 @@ public class CharacterTrigger : MonoBehaviour
     void Start()
     {
         characterName = transform.parent.name.Substring(0, transform.parent.name.Length - "(Clone)".Length);
-        line = Resources.Load<TextAsset>($"Text/{characterName}").text;
-        Canvas.GetComponentInChildren<TextMeshProUGUI>().SetText(line);
         ToggleCanvas(false);
     }
 
     public void ToggleCanvas(bool val)
     {
+        if (showLobby && characterName == "Bird")
+        {
+            line = QuestionOptions.Instance.LobbyLine;
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(characterName))
+            {
+                return;
+            }
+            line = Resources.Load<TextAsset>($"Text/{characterName}").text;
+        }
+        Canvas.GetComponentInChildren<TextMeshProUGUI>().SetText(line);
         Canvas.SetActive(val);
     }
 
@@ -38,6 +50,7 @@ public class CharacterTrigger : MonoBehaviour
                 if (IsGoal)
                 {
                     IsGoal = false;
+                    showLobby = false;
                     MapGenerator.Instance.IncrementGoal();
                 }
                 else
@@ -53,6 +66,10 @@ public class CharacterTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            if (IsGoal)
+            {
+                PlayerManager.Instance.ToggleExclamation(true);
+            }
             canInteract = true;
             ToggleCanvas(true);
         }
@@ -62,6 +79,10 @@ public class CharacterTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            if (IsGoal)
+            {
+                PlayerManager.Instance.ToggleExclamation(false);
+            }
             canInteract = false;
             ToggleCanvas(false);
         }

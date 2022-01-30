@@ -78,19 +78,24 @@ public class MapGenerator : MonoBehaviour
         Gizmos.DrawSphere(PlayerManager.Instance.transform.position + Vector3.up * 3, 0.5f);
     }
 
+    void ReloadGame()
+    {
+        Debug.Log("reloading scene...");
+        Rooms = new List<Room>();
+        Halls = new List<Hall>();
+
+        CanReload = false;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     // Update is called once per frame
     void Update()
     {
         // if (CanReload && Keyboard.current.digit0Key.wasPressedThisFrame)
         if (CanReload && Input.GetKeyDown(KeyCode.Alpha0))
         {
-            Debug.Log("reloading scene...");
-            Rooms = new List<Room>();
-            Halls = new List<Hall>();
-
-            CanReload = false;
-
-			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            ReloadGame();
         }
 
         // if (Keyboard.current.digit1Key.wasPressedThisFrame)
@@ -112,7 +117,9 @@ public class MapGenerator : MonoBehaviour
                 return;
             }
         }
-        Debug.LogError($"FAILED ITERATIONS!!");
+        Debug.Log($"FAILED ITERATIONS!!");
+        ReloadGame();
+
     }
 
     void ResetAll()
@@ -124,7 +131,6 @@ public class MapGenerator : MonoBehaviour
         Halls = new List<Hall>();
 
         Map = new Tile[worldSize[0], worldSize[1]];
-        // TODO: pooling?
         foreach (var o in m_GeneratedRoomObjects)
         {
             Destroy(o);
@@ -548,7 +554,7 @@ public class MapGenerator : MonoBehaviour
             return false;
         }
         var obj = Resources.Load<GameObject>($"Characters/{Room.RoomTypeToCharacter[type]}");
-        var inst = Instantiate(obj, new Vector3(tile.Coord.x, 0.25f, tile.Coord.y), Quaternion.identity, tile.transform);
+        var inst = Instantiate(obj, new Vector3(tile.Coord.x, 0.3f, tile.Coord.y), Quaternion.identity, tile.transform);
         room.Character = inst;
         return true;
     }
