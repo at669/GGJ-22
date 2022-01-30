@@ -47,7 +47,7 @@ public class Room : Space
     };
     public static Dictionary<RoomType, string[]> WallFurnitureNames = new Dictionary<RoomType, string[]>
     {
-        { RoomType.Lobby, new string[] { "Cylinder" } },
+        { RoomType.Lobby, new string[] {  } },
         { RoomType.Kitchen, new string[] { "Cylinder" } },
         { RoomType.IT, new string[] { "Cylinder" } },
         { RoomType.HR, new string[] { "Cylinder" } },
@@ -60,16 +60,16 @@ public class Room : Space
     };
     public static Dictionary<RoomType, string[]> MiddleFurnitureNames = new Dictionary<RoomType, string[]>
     {
-        { RoomType.Lobby, new string[] { "Cube" } },
+        { RoomType.Lobby, new string[] { "Desk" } },
         { RoomType.Kitchen, new string[] { "Cube" } },
-        { RoomType.IT, new string[] { "Cube" } },
-        { RoomType.HR, new string[] { "Cube" } },
-        { RoomType.Engineering, new string[] { "Cube" } },
-        { RoomType.Marketing, new string[] { "Cube" } },
-        { RoomType.Finance, new string[] { "Cube" } },
+        { RoomType.IT, new string[] { "Cube", "Desk" } },
+        { RoomType.HR, new string[] { "Cube", "Desk" } },
+        { RoomType.Engineering, new string[] { "Cube", "Desk" } },
+        { RoomType.Marketing, new string[] { "Cube", "Desk" } },
+        { RoomType.Finance, new string[] { "Cube", "Desk" } },
         { RoomType.Bathroom, new string[] { "Cube" } },
         { RoomType.Custodial, new string[] { "Cube" } },
-        { RoomType.Security, new string[] { "Cube" } },
+        { RoomType.Security, new string[] { "Cube", "Desk" } },
     };
     public static Dictionary<RoomType, string[]> AnyFurnitureNames = new Dictionary<RoomType, string[]>
     {
@@ -141,14 +141,18 @@ public class Room : Space
     {
         var spaces = GetUnoccupiedSpaceByType(type);
         var furnOptions = GetFurnitureOptionsByType(type);
+        var resTiles = new List<Tile>();
+        var resFurniture = new List<string>();
+        if (furnOptions.Count == 0)
+        {
+            return (resTiles, resFurniture);
+        }
         // Generate number based on available tiles
         if (num == -1)
         {
             num = Mathf.Max(1, Mathf.CeilToInt(spaces.Count / FURNITURE_RATE));
         }
 
-        var resTiles = new List<Tile>();
-        var resFurniture = new List<string>();
         var order = Extensions.RandomOrder(num);
         for (int i = 0; i < num; i++)
         {
