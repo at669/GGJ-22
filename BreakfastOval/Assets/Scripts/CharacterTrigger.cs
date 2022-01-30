@@ -8,12 +8,6 @@ public class CharacterTrigger : MonoBehaviour
 {
     bool canInteract = false;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -22,6 +16,7 @@ public class CharacterTrigger : MonoBehaviour
             if (Keyboard.current.enterKey.wasPressedThisFrame)
             {
                 Debug.Log("interacting!");
+                // TODO
             }
         }
     }

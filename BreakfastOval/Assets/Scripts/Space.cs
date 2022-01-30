@@ -6,17 +6,11 @@ using UnityEngine;
 public abstract class Space
 {
     public Rect Rect;
-    public List<Tile> TilesWithDoors = new List<Tile>();
     public List<Tile> Tiles = new List<Tile>();
-    public List<Tile> TilesWithWalls = new List<Tile>();
-    public List<Tile> TilesWithoutWalls = new List<Tile>();
 
     public void Reset()
     {
         Tiles = new List<Tile>();
-        TilesWithDoors = new List<Tile>();
-        TilesWithWalls = new List<Tile>();
-        TilesWithoutWalls = new List<Tile>();
     }
 
     public Tile SelectEquivalentTileFromCoord(Space oldSpace, Vector2 oldCoord)
@@ -38,8 +32,8 @@ public abstract class Space
 
     public Tile SelectBorderTileForHall()
     {
-        TilesWithWalls = Tiles.Where(t => t.Walls.Count > 0).ToList();
-        var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor() && t.Doors.Count == 0).ToArray();
+        // TilesWithWalls = Tiles.Where(t => t.Walls.Count > 0).ToList();
+        var validWalls = GetUnoccupiedWallTiles().Where(t => t.CanCreateHallNeighbor() && t.Doors.Count == 0).ToArray();
         // var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor()).ToArray();
         if (validWalls.Length == 0)
         {
@@ -51,7 +45,6 @@ public abstract class Space
 
     public void AssignDoorAt(Tile t, Direction dir, bool first = true)
     {
-        TilesWithDoors.Add(t);
         t.AssignDoorAt(dir, first);
     }
 
@@ -64,28 +57,6 @@ public abstract class Space
             hasWalls = CheckAssignNeighbor(t, Direction.East, type) || hasWalls;
             hasWalls = CheckAssignNeighbor(t, Direction.South, type) || hasWalls;
             hasWalls = CheckAssignNeighbor(t, Direction.West, type) || hasWalls;
-            if (hasWalls)
-            {
-                if (!TilesWithWalls.Contains(t))
-                {
-                    TilesWithWalls.Add(t);
-                }
-                if (TilesWithoutWalls.Contains(t))
-                {
-                    TilesWithoutWalls.Remove(t);
-                }
-            }
-            else
-            {
-                if (!TilesWithoutWalls.Contains(t))
-                {
-                    TilesWithoutWalls.Add(t);
-                }
-                if (TilesWithWalls.Contains(t))
-                {
-                    TilesWithWalls.Remove(t);
-                }
-            }
         }
     }
 
@@ -119,16 +90,19 @@ public abstract class Space
 
     public List<Tile> GetUnoccupiedMiddleTiles()
     {
-        return TilesWithoutWalls.Where(t => !t.occupied).ToList();
+        // Debug.Log($"returning {Tiles.Where(t => !t.occupied && t.Walls.Count == 0).ToList().Count} unoccupied middle tiles");
+        return Tiles.Where(t => !t.occupied && t.Walls.Count == 0).ToList();
     }
 
     public List<Tile> GetUnoccupiedWallTiles()
     {
-        return TilesWithWalls.Where(t => !t.occupied).ToList();
+        // Debug.Log($"returning {Tiles.Where(t => !t.occupied && t.Walls.Count > 0).ToList().Count} unoccupied wall tiles");
+        return Tiles.Where(t => !t.occupied && t.Walls.Count > 0).ToList();
     }
 
     public List<Tile> GetAllUnoccupiedTiles()
     {
+        // Debug.Log($"returning {Tiles.Where(t => !t.occupied).ToList().Count} unoccupied any tiles");
         return Tiles.Where(t => !t.occupied).ToList();
     }
 }

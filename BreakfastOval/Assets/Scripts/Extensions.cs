@@ -8,6 +8,7 @@ public enum RoomType { Lobby, Kitchen, IT, Bathroom, Broom }
 public enum Direction { Error, North, East, South, West }
 public enum TileType { Error, Room, Hall, Nothing }
 public enum RelativeDirection { Error, Front, Left, Right, Back }
+public enum FurnitureType { Error, Middle, Wall, Ceiling, AnyFloor }
 
 public static class Extensions
 {
@@ -280,6 +281,26 @@ public static class Extensions
         }
 
         // Debug.Log($"randomized {String.Join(", ", res)}");
+        return res;
+    }
+
+    public static Quaternion RandomRightAngleRotation()
+    {
+        int rand = Random.Range(0, Room.FurnitureRotations.Length);
+        return Room.FurnitureRotations[rand];
+    }
+
+    public static List<T> Join<T>(this List<T> first, List<T> second)
+    {
+        var res = new List<T>();
+        foreach (var f in first)
+        {
+            res.Add(f);
+        }
+        foreach (var f in second)
+        {
+            res.Add(f);
+        }
         return res;
     }
 }

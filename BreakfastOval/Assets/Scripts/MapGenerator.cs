@@ -432,27 +432,41 @@ public class MapGenerator : MonoBehaviour
         }
 
         ManageSpaceWalls(room, TileType.Room);
-        GenerateCharacter(room.RoomType, room.SelectCharacterTile());
-        (var roomTiles, var roomFurn) = room.SelectMiddleFurnitureTiles(1);
-        GenerateFurniture(room.RoomType, roomTiles, roomFurn);
+        bool tryCenter = true;
+        for (int i = 0; i < MAX_ITER; i++)
+        {
+            if (GenerateCharacter(room.RoomType, room.SelectCharacterTile(tryCenter)))
+            {
+                break;
+            }
+            tryCenter = false;
+        }
+        (var middleFurnTile, var middleFurnName) = room.SelectFurnitureTiles(FurnitureType.Middle);
+        GenerateFurniture(room.RoomType, middleFurnTile, middleFurnName);
+
+        (var wallFurnTile, var wallFurnName) = room.SelectFurnitureTiles(FurnitureType.Wall);
+        GenerateFurniture(room.RoomType, wallFurnTile, wallFurnName);
         // GenerateFurniture(room.RoomType, room.SelectMiddleFurnitureTiles(1));
         return room;
     }
 
-    static void GenerateCharacter(RoomType type, Tile tile)
+    static bool GenerateCharacter(RoomType type, Tile tile)
     {
+        if (tile == null)
+        {
+            return false;
+        }
         var obj = Resources.Load<GameObject>($"Characters/{type}");
-        var inst = Instantiate(obj, new Vector3(tile.Coord.x, 0.5f, tile.Coord.y), Quaternion.identity, tile.transform);
+        var inst = Instantiate(obj, new Vector3(tile.Coord.x, 0.25f, tile.Coord.y), Quaternion.identity, tile.transform);
+        return true;
     }
 
     static void GenerateFurniture(RoomType type, List<Tile> tiles, List<string> furnitureNames)
     {
-        // foreach (var t in tiles)
         for (int i = 0; i < tiles.Count; i++)
         {
-            // Debug.Log($"generating furniture on {t}");
             var obj = Resources.Load<GameObject>($"{type}/{furnitureNames[i]}");
-            var inst = Instantiate(obj, new Vector3(tiles[i].Coord.x, 0.5f, tiles[i].Coord.y), Quaternion.identity, tiles[i].transform);
+            var inst = Instantiate(obj, new Vector3(tiles[i].Coord.x, 0.1f, tiles[i].Coord.y), Extensions.RandomRightAngleRotation(), tiles[i].transform);
         }
     }
 
@@ -468,12 +482,6 @@ public class MapGenerator : MonoBehaviour
     {
         if (!t.Walls.Contains(dir))
         {
-            if (space.TilesWithWalls.Contains(t))
-            {
-                space.TilesWithWalls.Remove(t);
-            }
-            space.TilesWithoutWalls.Add(t);
-
             if (t.Doors.Contains(dir))
             {
                 return;
@@ -494,10 +502,6 @@ public class MapGenerator : MonoBehaviour
                     t.WallWestObj.SetActive(false);
                     break;
             }
-        }
-        else
-        {
-            space.TilesWithWalls.Add(t);
         }
     }
 
