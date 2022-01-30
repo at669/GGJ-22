@@ -297,6 +297,63 @@ MonoBehaviour:
   currentDoorTile: {fileID: 0}
   currentDoorDir: 0
   bottomLeftOffset: {x: 0, y: 0, z: 0}
+--- !u!1001 &260120086
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2883639709648511254, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
+      propertyPath: m_Name
+      value: Cabinet
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
 --- !u!1 &290575154
 GameObject:
   m_ObjectHideFlags: 0
@@ -341,67 +398,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d9cc9d7803104904b1127c3f2b14d21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1001 &348047370
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1391684294115735278, guid: b1038544f1cd8498085207446edae285, type: 3}
-      propertyPath: m_Name
-      value: Drawers
-      objectReference: {fileID: 0}
-    - target: {fileID: 1391684294115735278, guid: b1038544f1cd8498085207446edae285, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1391684294115735279, guid: b1038544f1cd8498085207446edae285, type: 3}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1391684294115735279, guid: b1038544f1cd8498085207446edae285, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1391684294115735279, guid: b1038544f1cd8498085207446edae285, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1391684294115735279, guid: b1038544f1cd8498085207446edae285, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1391684294115735279, guid: b1038544f1cd8498085207446edae285, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1391684294115735279, guid: b1038544f1cd8498085207446edae285, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1391684294115735279, guid: b1038544f1cd8498085207446edae285, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1391684294115735279, guid: b1038544f1cd8498085207446edae285, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1391684294115735279, guid: b1038544f1cd8498085207446edae285, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1391684294115735279, guid: b1038544f1cd8498085207446edae285, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1391684294115735279, guid: b1038544f1cd8498085207446edae285, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b1038544f1cd8498085207446edae285, type: 3}
 --- !u!1 &360413699
 GameObject:
   m_ObjectHideFlags: 0
@@ -937,7 +933,7 @@ MonoBehaviour:
   initialRoomSize: 0400000004000000
   KEEP_CURRENT_ROOM: 1
   MAX_ITER: 100
-  CHANCE_WALL: 0.2
+  CHANCE_WALLART: 0.2
   worldSize: 3200000032000000
   numRooms: 10
   hallLength: 030000000a000000
@@ -961,8 +957,23 @@ MonoBehaviour:
     Answer0: Great, thanks!
     Answer1: It's going.
   - Question: Do you like my outfit?
-    Answer0: Uh...
-    Answer1: Definitely!
+    Answer0: Uh... But...
+    Answer1: Oh yeah, definitely!
+  - Question: Is it raining right now?
+    Answer0: I mean, probably.
+    Answer1: Why aren't there windows here?
+  - Question: Should I break up with him?
+    Answer0: Who?
+    Answer1: Do you even work here?
+  - Question: Is the coffee machine broken again?
+    Answer0: We don't have coffee.
+    Answer1: Yeah.
+  - Question: n@c}n_Dq{=}ErB@+=5_UH2wtN:z2c#
+    Answer0: Me too!
+    Answer1: Why would you say that?
+  - Question: Did you make a new JIRA ticket for that?
+    Answer0: Huh?
+    Answer1: What?
 --- !u!1 &1356659982
 GameObject:
   m_ObjectHideFlags: 0

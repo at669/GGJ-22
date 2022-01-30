@@ -47,7 +47,7 @@ public class Room : Space
     };
     public static Dictionary<RoomType, string[]> WallFurnitureNames = new Dictionary<RoomType, string[]>
     {
-        { RoomType.Bathroom, new string[] { "LightStand", "Drawers", "BathroomCabinet" } },
+        { RoomType.Bathroom, new string[] { "LightStand", "BathroomCabinet", "Stalls" } },
         { RoomType.Custodial, new string[] { "LightStand" } },
         { RoomType.Engineering, new string[] { "LightStand", "Drawers" } },
         { RoomType.Finance, new string[] { "LightStand", "Drawers" } },
