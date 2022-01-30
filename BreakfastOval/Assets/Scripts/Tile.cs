@@ -18,6 +18,7 @@ public class Tile : MonoBehaviour
     public GameObject WallSouthObj;
     public GameObject WallWestObj;
     public GameObject FloorObj;
+    public DoorTrigger DoorTrigger;
 
     // Start is called before the first frame update
     void OnEnable()
@@ -25,20 +26,29 @@ public class Tile : MonoBehaviour
         Walls = Extensions.AllDirections();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void AssignDoorAt(Direction dir, bool first = true)
     {
-
-    }
-
-    public void AssignDoorAt(Direction dir)
-    {
+        var wallObj = GetWallObject(dir);
+        DoorTrigger.gameObject.SetActive(true);
+        var wallRend = wallObj.GetComponent<Renderer>();
+        var wallColl = wallObj.GetComponent<Collider>();
         if (Walls.Contains(dir))
         {
             Walls.Remove(dir);
         }
         Doors.Add(dir);
-        GetWallObject(dir).GetComponent<Renderer>().material.color = Color.blue;
+        if (!first)
+        {
+            wallObj.SetActive(true);
+            wallColl.isTrigger = true;
+            wallRend.material.color = Color.blue;
+            wallObj.transform.localScale = new Vector3(0.9f, wallObj.transform.localScale.y, wallObj.transform.localScale.z);
+        }
+        else
+        {
+            wallRend.enabled = false;
+            wallColl.enabled = false;
+        }
     }
 
     /// <summary>
@@ -46,7 +56,7 @@ public class Tile : MonoBehaviour
     /// </summary>
     /// <param name="fromDir"></param>
     /// <param name="fromType"></param>
-    /// <returns>True if there are still walls</returns>
+    /// <returns>True if there is a wall on this tile in fromDir</returns>
     public bool AssignNeighborAt(Direction fromDir, TileType fromType)
     {
         switch (fromDir)
@@ -70,7 +80,7 @@ public class Tile : MonoBehaviour
             Walls.Remove(fromDir);
         }
 
-        return Walls.Count > 0;
+        return Walls.Contains(fromDir);
     }
 
     public Direction SelectRandomWall() {
@@ -93,5 +103,25 @@ public class Tile : MonoBehaviour
             default:
                 return null;
         }
+    }
+
+    public Space GetSpace()
+    {
+        foreach (var r in MapGenerator.Rooms.SelectMany(r => r.Tiles.Where(t => t.Coord == Coord).Select(t => r)))
+        {
+            return r;
+        }
+
+        foreach (var r in MapGenerator.Halls.SelectMany(r => r.Tiles.Where(t => t.Coord == Coord).Select(t => r)))
+        {
+            return r;
+        }
+
+        return null;
+    }
+
+    public override string ToString()
+    {
+        return Coord.ToString();
     }
 }

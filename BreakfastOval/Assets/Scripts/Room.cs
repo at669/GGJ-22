@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Room : Space
 {
+    public RoomType RoomType;
     public Vector2 Size;
     public List<GameObject> furniture;
 

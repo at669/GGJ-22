@@ -6,6 +6,7 @@ using UnityEngine;
 public abstract class Space
 {
     public Rect Rect;
+    public List<Tile> TilesWithDoors = new List<Tile>();
     public List<Tile> Tiles = new List<Tile>();
     public List<Tile> TilesWithWalls = new List<Tile>();
     public List<Tile> TilesWithoutWalls = new List<Tile>();
@@ -13,29 +14,49 @@ public abstract class Space
     public void Reset()
     {
         Tiles = new List<Tile>();
+        TilesWithDoors = new List<Tile>();
         TilesWithWalls = new List<Tile>();
         TilesWithoutWalls = new List<Tile>();
+    }
+
+    public Tile SelectEquivalentTileFromCoord(Space oldSpace, Vector2 oldCoord)
+    {
+        var xDiff = oldSpace.Rect.xMax - Rect.xMax;
+        var yDiff = oldSpace.Rect.yMax - Rect.yMax;
+        int x = (int)oldCoord.x - (int)xDiff;
+        int y = (int)oldCoord.y - (int)yDiff;
+
+        if (new Vector2(x, y).InMapBounds())
+        {
+            return MapGenerator.Map[x, y];
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public Tile SelectBorderTileForHall()
     {
         TilesWithWalls = Tiles.Where(t => t.Walls.Count > 0).ToList();
-        Debug.Log($"TilesWithWalls.Count {TilesWithWalls.Count}");
-        // var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor() && t.Doors.Count == 0).ToArray();
-        var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor()).ToArray();
+        var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor() && t.Doors.Count == 0).ToArray();
+        // var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor()).ToArray();
         if (validWalls.Length == 0)
         {
-            Debug.Log($"no valid border wall tiles");
             return null;
         }
-        // Debug.Log($"valid walls len {validWalls.Length}");
         int rand = Random.Range(0, validWalls.Length);
         return validWalls[rand];
     }
 
+    public void AssignDoorAt(Tile t, Direction dir, bool first = true)
+    {
+        TilesWithDoors.Add(t);
+        t.AssignDoorAt(dir, first);
+    }
+
     public void ManageWalls(TileType type)
     {
-        // Reset(false);
         foreach (Tile t in Tiles)
         {
             bool hasWalls = false;
@@ -68,22 +89,31 @@ public abstract class Space
         }
     }
 
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="t"></param>
+    /// <param name="dir"></param>
+    /// <param name="type"></param>
+    /// <returns>True if this tile will have a wall in given direction</returns>
     bool CheckAssignNeighbor(Tile t, Direction dir, TileType type)
     {
+        bool res = true;
         var coordAt = t.GetCoord(dir, 1);
         if (CheckCoordInSpace(coordAt))
         {
             var tileToDir = MapGenerator.GetTileFromCoord(coordAt);
             if (tileToDir != null)
             {
-                return tileToDir.AssignNeighborAt(dir.GetOpposite(), type);
+                res = tileToDir.AssignNeighborAt(dir.GetOpposite(), type);
             }
         }
-        return true;
+
+        return res;
     }
 
     public bool CheckCoordInSpace(Vector2 coord)
     {
-        return Tiles.Where(t => Vector2.Equals(t.Coord, coord)).Count() > 0;
+        return Tiles.Where(t => t.Coord ==  coord).Count() > 0;
     }
 }
