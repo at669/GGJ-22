@@ -21,7 +21,7 @@ public class CharacterTrigger : MonoBehaviour
                 {
                     Debug.Log("interacting with goal!");
                     IsGoal = false;
-                    MapGenerator.IncrementGoal();
+                    MapGenerator.Instance.IncrementGoal();
                 }
                 else
                 {

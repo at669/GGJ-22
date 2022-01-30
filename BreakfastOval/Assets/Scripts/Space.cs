@@ -10,6 +10,16 @@ public abstract class Space
 
     public void Reset()
     {
+        if (Tiles.Count > 0)
+        {
+            Tiles.ForEach(t => {
+                var door = t.GetComponentInChildren<DoorTrigger>();
+                if (door != null)
+                {
+                    door.ShouldRegenOnEnter = false;
+                }
+            });
+        }
         Tiles = new List<Tile>();
     }
 
@@ -104,5 +114,10 @@ public abstract class Space
     {
         // Debug.Log($"returning {Tiles.Where(t => !t.occupied).ToList().Count} unoccupied any tiles");
         return Tiles.Where(t => !t.occupied).ToList();
+    }
+
+    public List<Tile> GetAllDoorTiles()
+    {
+        return Tiles.Where(t => t.Doors.Count > 0).ToList();
     }
 }

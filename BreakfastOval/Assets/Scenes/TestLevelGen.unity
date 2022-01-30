@@ -450,7 +450,7 @@ MonoBehaviour:
   initialRoomSize: 0400000004000000
   KEEP_CURRENT_ROOM: 1
   MAX_ITER: 50
-  worldSize: 4b0000004b000000
+  worldSize: 3200000032000000
   numRooms: 3
   hallLength: 030000000a000000
   roomMinSize: 0300000003000000

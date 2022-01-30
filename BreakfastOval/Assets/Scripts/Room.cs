@@ -11,6 +11,7 @@ public class Room : Space
         Quaternion.identity, Quaternion.Euler(0, 90, 0), Quaternion.Euler(0, 180, 0), Quaternion.Euler(0, 270, 0)
     };
     public const int FURNITURE_RATE = 6;
+    public const int LIGHT_RATE = 8;
     public static Dictionary<RoomType, string[]> CeilingFurnitureNames = new Dictionary<RoomType, string[]>
     {
         { RoomType.Lobby, new string[] { }},
@@ -124,32 +125,6 @@ public class Room : Space
         return (resTiles, resFurniture);
     }
 
-    // public (List<Tile>, List<string>) SelectMiddleFurnitureTiles(int num = -1)
-    // {
-    //     // Generate number based on available tiles
-    //     if (num == -1)
-    //     {
-    //         num = Mathf.Max(1, Mathf.CeilToInt(GetUnoccupiedMiddleTiles().Count / FURNITURE_RATE));
-    //     }
-
-    //     var resTiles = new List<Tile>();
-    //     var resFurniture = new List<string>();
-    //     var order = Extensions.RandomOrder(num);
-    //     for (int i = 0; i < num; i++)
-    //     {
-    //         var tiles = GetUnoccupiedMiddleTiles();
-    //         if (tiles.Count == 0)
-    //         {
-    //             continue;
-    //         }
-    //         tiles[order[i]].occupied = true;
-    //         resTiles.Add(tiles[order[i]]);
-    //         resFurniture.Add(MiddleFurnitureNames[RoomType][Random.Range(0, MiddleFurnitureNames[RoomType].Length)]);
-    //     }
-
-    //     return (resTiles, resFurniture);
-    // }
-
     public Tile SelectCharacterTile(bool tryCenter)
     {
         var spaces = tryCenter ? GetUnoccupiedMiddleTiles() : GetAllUnoccupiedTiles();
@@ -160,5 +135,25 @@ public class Room : Space
         int rand = Random.Range(0, spaces.Count);
         spaces[rand].occupied = true;
         return spaces[rand];
+    }
+
+    public List<Tile> SelectAnyTiles(int num)
+    {
+        var resTiles = new List<Tile>();
+        var order = Extensions.RandomOrder(num);
+
+        num = Mathf.Max(1, Mathf.CeilToInt(Tiles.Count / LIGHT_RATE));
+
+        for (int i = 0; i < num; i++)
+        {
+            var tiles = Tiles;
+            if (tiles.Count == 0)
+            {
+                continue;
+            }
+            resTiles.Add(tiles[order[i]]);
+        }
+
+        return resTiles;
     }
 }

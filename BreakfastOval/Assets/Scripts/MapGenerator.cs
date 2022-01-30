@@ -5,6 +5,19 @@ using UnityEngine.InputSystem;
 
 public class MapGenerator : MonoBehaviour
 {
+    static MapGenerator _instance;
+    public static MapGenerator Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<MapGenerator>();
+            }
+            return _instance;
+        }
+    }
+
     public static List<int> Order;
     public static int OrderIdx = 0;
     public PlayerManager Player;
@@ -12,6 +25,7 @@ public class MapGenerator : MonoBehaviour
     public int[] initialRoomSize = new int[2];
     public bool KEEP_CURRENT_ROOM = true;
     public int MAX_ITER = 100;
+    public float CHANCE_WALL = 0.2f;
     public int[] worldSize = new int[2];
     public static Tile[,] Map;
     public int numRooms;
@@ -68,7 +82,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    void Generate(bool keepRoom)
+    public void Generate(bool keepRoom)
     {
         for (int i = 0; i < MAX_ITER; i++)
         {
@@ -102,13 +116,16 @@ public class MapGenerator : MonoBehaviour
     {
         var origPlayerSpace = PlayerManager.Instance.currentSpace;
         var origPlayerDoorTile = PlayerManager.Instance.currentDoorTile;
-        Order = Extensions.RandomOrder(numRooms - 1);
-        for (int i = 0; i < Order.Count; i++)
+        if (!keepRoom)
         {
-            Order[i]++;
+            Order = Extensions.RandomOrder(numRooms - 1);
+            for (int i = 0; i < Order.Count; i++)
+            {
+                Order[i]++;
+            }
+            OrderIdx = 0;
+            PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
         }
-        OrderIdx = 0;
-        PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
 
         // Generate current room
         // Find bottom left corner of current room
@@ -450,6 +467,9 @@ public class MapGenerator : MonoBehaviour
 
         (var wallFurnTile, var wallFurnName) = room.SelectFurnitureTiles(FurnitureType.Wall);
         GenerateFurniture(room.RoomType, wallFurnTile, wallFurnName);
+
+        var ceilingTiles = room.SelectAnyTiles(Room.LIGHT_RATE);
+        ceilingTiles.ForEach(t => t.GetComponentInChildren<CeilingLightManager>().Turn(true));
         return room;
     }
 
@@ -535,7 +555,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public static void IncrementGoal()
+    public void IncrementGoal()
     {
         OrderIdx += 1;
 
@@ -546,11 +566,12 @@ public class MapGenerator : MonoBehaviour
             return;
         }
 
+        PlayerManager.Instance.GoalRoom.GetAllDoorTiles().ForEach(t => t.GetComponentInChildren<DoorTrigger>().ShouldRegenOnEnter = true);
         PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
         PlayerManager.Instance.GoalRoom = Rooms[PlayerManager.Instance.GoalRoomIdx];
         PlayerManager.Instance.GoalCharacter = PlayerManager.Instance.GoalRoom.Character;
         PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
-        // ArrowManager.target = hallTile.transform.position + new Vector3(0, 0.2f, 0);
+        // ArrowMana`ger.target = hallTile.transform.position + new Vector3(0, 0.2f, 0);
         ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
     }
 }
