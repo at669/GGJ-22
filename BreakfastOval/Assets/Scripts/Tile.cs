@@ -18,6 +18,7 @@ public class Tile : MonoBehaviour
     public GameObject WallSouthObj;
     public GameObject WallWestObj;
     public GameObject FloorObj;
+    public DoorTrigger DoorTrigger;
 
     // Start is called before the first frame update
     void OnEnable()
@@ -25,14 +26,29 @@ public class Tile : MonoBehaviour
         Walls = Extensions.AllDirections();
     }
 
-    public void AssignDoorAt(Direction dir)
+    public void AssignDoorAt(Direction dir, bool first = true)
     {
+        var wallObj = GetWallObject(dir);
+        DoorTrigger.gameObject.SetActive(true);
+        var wallRend = wallObj.GetComponent<Renderer>();
+        var wallColl = wallObj.GetComponent<Collider>();
         if (Walls.Contains(dir))
         {
             Walls.Remove(dir);
         }
         Doors.Add(dir);
-        GetWallObject(dir).GetComponent<Renderer>().material.color = Color.blue;
+        if (!first)
+        {
+            wallObj.SetActive(true);
+            wallColl.isTrigger = true;
+            wallRend.material.color = Color.blue;
+            wallObj.transform.localScale = new Vector3(0.9f, wallObj.transform.localScale.y, wallObj.transform.localScale.z);
+        }
+        else
+        {
+            wallRend.enabled = false;
+            wallColl.enabled = false;
+        }
     }
 
     /// <summary>
@@ -87,5 +103,25 @@ public class Tile : MonoBehaviour
             default:
                 return null;
         }
+    }
+
+    public Space GetSpace()
+    {
+        foreach (var r in MapGenerator.Rooms.SelectMany(r => r.Tiles.Where(t => t.Coord == Coord).Select(t => r)))
+        {
+            return r;
+        }
+
+        foreach (var r in MapGenerator.Halls.SelectMany(r => r.Tiles.Where(t => t.Coord == Coord).Select(t => r)))
+        {
+            return r;
+        }
+
+        return null;
+    }
+
+    public override string ToString()
+    {
+        return Coord.ToString();
     }
 }

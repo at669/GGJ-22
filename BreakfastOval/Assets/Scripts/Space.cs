@@ -6,6 +6,7 @@ using UnityEngine;
 public abstract class Space
 {
     public Rect Rect;
+    public List<Tile> TilesWithDoors = new List<Tile>();
     public List<Tile> Tiles = new List<Tile>();
     public List<Tile> TilesWithWalls = new List<Tile>();
     public List<Tile> TilesWithoutWalls = new List<Tile>();
@@ -13,21 +14,45 @@ public abstract class Space
     public void Reset()
     {
         Tiles = new List<Tile>();
+        TilesWithDoors = new List<Tile>();
         TilesWithWalls = new List<Tile>();
         TilesWithoutWalls = new List<Tile>();
+    }
+
+    public Tile SelectEquivalentTileFromCoord(Space oldSpace, Vector2 oldCoord)
+    {
+        var xDiff = oldSpace.Rect.xMax - Rect.xMax;
+        var yDiff = oldSpace.Rect.yMax - Rect.yMax;
+        int x = (int)oldCoord.x - (int)xDiff;
+        int y = (int)oldCoord.y - (int)yDiff;
+
+        if (new Vector2(x, y).InMapBounds())
+        {
+            return MapGenerator.Map[x, y];
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public Tile SelectBorderTileForHall()
     {
         TilesWithWalls = Tiles.Where(t => t.Walls.Count > 0).ToList();
-        // var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor() && t.Doors.Count == 0).ToArray();
-        var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor()).ToArray();
+        var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor() && t.Doors.Count == 0).ToArray();
+        // var validWalls = TilesWithWalls.Where(t => t.CanCreateHallNeighbor()).ToArray();
         if (validWalls.Length == 0)
         {
             return null;
         }
         int rand = Random.Range(0, validWalls.Length);
         return validWalls[rand];
+    }
+
+    public void AssignDoorAt(Tile t, Direction dir, bool first = true)
+    {
+        TilesWithDoors.Add(t);
+        t.AssignDoorAt(dir, first);
     }
 
     public void ManageWalls(TileType type)

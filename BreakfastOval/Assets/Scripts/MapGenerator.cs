@@ -1,9 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class MapGenerator : MonoBehaviour
 {
+    public PlayerManager Player;
+    public static Vector3 playerSpawnPos = Vector3.zero;
+    public int[] initialRoomSize = new int[2];
+    public bool KEEP_CURRENT_ROOM = true;
     public int MAX_ITER = 100;
     public int[] worldSize = new int[2];
     public static Tile[,] Map;
@@ -21,8 +26,8 @@ public class MapGenerator : MonoBehaviour
     public int[] roomMaxSize = new int[2];
     public GameObject tilePrefab;
     List<GameObject> m_GeneratedRoomObjects = new List<GameObject>();
-    List<Room> m_Rooms = new List<Room>();
-    List<Hall> m_Halls = new List<Hall>();
+    public static List<Room> Rooms = new List<Room>();
+    public static List<Hall> Halls = new List<Hall>();
 
     // Start is called before the first frame update
     void Start()
@@ -38,7 +43,7 @@ public class MapGenerator : MonoBehaviour
 
         Map = new Tile[worldSize[0], worldSize[1]];
 
-        Generate();
+        Generate(false);
     }
 
     void OnDrawGizmos() {
@@ -49,32 +54,33 @@ public class MapGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Keyboard.current.digit1Key.wasPressedThisFrame)
         {
-            Generate();
+            Generate(true);
         }
     }
 
-    void Generate()
+    void Generate(bool keepRoom)
     {
         for (int i = 0; i < MAX_ITER; i++)
         {
             // Debug.Log($"ITERATION {i}");
             ResetAll();
-            if (BeginGeneration())
+            if (BeginGeneration(keepRoom))
             {
                 return;
             }
         }
+        Debug.LogError($"FAILED ITERATIONS!!");
     }
 
     void ResetAll()
     {
-        m_Rooms.ForEach(s => s.Reset());
-        m_Halls.ForEach(s => s.Reset());
+        Rooms.ForEach(s => s.Reset());
+        Halls.ForEach(s => s.Reset());
 
-        m_Rooms = new List<Room>();
-        m_Halls = new List<Hall>();
+        Rooms = new List<Room>();
+        Halls = new List<Hall>();
 
         Map = new Tile[worldSize[0], worldSize[1]];
         // TODO: pooling?
@@ -84,24 +90,66 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    bool BeginGeneration()
+    bool BeginGeneration(bool keepRoom)
     {
-        // Find bottom left corner of current room
-        int bottomLeftCurrX = Random.Range(roomMaxSize[0] / 2, worldSize[0] - roomMaxSize[0] - 1);
-        int bottomLeftCurrY = Random.Range(roomMaxSize[1] / 2, worldSize[1] - roomMaxSize[1] - 1);
+        var origPlayerSpace = PlayerManager.Instance.currentSpace;
+        var origPlayerDoorTile = PlayerManager.Instance.currentDoorTile;
+        var order = Extensions.RandomOrder(numRooms);
 
         // Generate current room
-        var initRoom = GenerateRoom(new Vector2(bottomLeftCurrX, bottomLeftCurrY), Vector2.zero);
-        m_Rooms.Add(initRoom);
+        // Find bottom left corner of current room
+        var initBottomLeft = new Vector2(Random.Range(roomMaxSize[0] / 2, worldSize[0] - roomMaxSize[0] - 1), Random.Range(roomMaxSize[1] / 2, worldSize[1] - roomMaxSize[1] - 1));
+        Room initRoom;
+
+        if (keepRoom)
+        {
+            initRoom = GenerateRoom(initBottomLeft, Vector2.zero, PlayerManager.Instance.currentSpace.Rect.size);
+        }
+        else
+        {
+            initRoom = GenerateRoom(initBottomLeft, Vector2.zero, Vector2.zero);
+        }
+        PlayerManager.Instance.currentSpace = initRoom;
+        playerSpawnPos = new Vector3(initBottomLeft.x, 0, initBottomLeft.y) + PlayerManager.Instance.bottomLeftOffset;
+        Player.TeleportPlayer(playerSpawnPos);
+        Rooms.Add(initRoom);
 
         // Generate first hall
-        var initWallTile = initRoom.SelectBorderTileForHall();
+
+        Tile initWallTile;
+        Hall initHall;
+        if (keepRoom)
+        {
+            initWallTile = PlayerManager.Instance.currentSpace.SelectEquivalentTileFromCoord(origPlayerSpace, origPlayerDoorTile.Coord);
+            if (initWallTile == null)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            initWallTile = initRoom.SelectBorderTileForHall();
+        }
+        PlayerManager.Instance.currentDoorTile = initWallTile;
         if (initWallTile == null)
         {
             return false;
         }
-        var initHall = GenerateHall(initWallTile);
-        m_Halls.Add(initHall);
+
+        if (keepRoom)
+        {
+            initHall = GenerateHall(initWallTile, PlayerManager.Instance.currentDoorDir);
+        }
+        else
+        {
+            initHall = GenerateHall(initWallTile);
+        }
+
+        if (initHall == null)
+        {
+            return false;
+        }
+        Halls.Add(initHall);
 
         for (int i = 1; i < numRooms; i++)
         {
@@ -120,8 +168,8 @@ public class MapGenerator : MonoBehaviour
             // TODO: get bounds for second room based on attempted bottom left + range + clamp based on existing map
             // Find bottom left corner of next room
             (var bottomLeft, var range) = GetBottomLeftCorner(hallTile, doorWall);
-            var room1 = GenerateRoom(bottomLeft, range, doorWall.GetOpposite(), hallTile);
-            m_Rooms.Add(room1);
+            var room1 = GenerateRoom(bottomLeft, range, Vector2.zero, doorWall.GetOpposite(), hallTile);
+            Rooms.Add(room1);
 
             if (i == numRooms - 1)
             {
@@ -135,7 +183,11 @@ public class MapGenerator : MonoBehaviour
                 return false;
             }
             var hall = GenerateHall(wallTile);
-            m_Halls.Add(hall);
+            if (hall == null)
+            {
+                return false;
+            }
+            Halls.Add(hall);
 
             initHall = hall;
         }
@@ -211,18 +263,31 @@ public class MapGenerator : MonoBehaviour
         return options[Random.Range(0, options.Count)];
     }
 
-    Hall GenerateHall(Tile fromTile)
+    Hall GenerateHall(Tile fromTile, Direction setWallDir = Direction.Error)
     {
         bool isFirst = true;
         var hall = new Hall(Hall.GenerateLength());
-        var hallParent = new GameObject($"Hall {m_Halls.Count}");
+        var hallParent = new GameObject($"Hall {Halls.Count}");
         m_GeneratedRoomObjects.Add(hallParent);
         for (int i = 0; i < hall.Length; i++)
         {
             bool isLast = i == hall.Length - 1;
             bool addedLastTile = false;
-            var dir = SelectRandomEmptyWall(fromTile);
+            Direction dir;
+            if (setWallDir == Direction.Error)
+            {
+               dir = SelectRandomEmptyWall(fromTile);
+            }
+            else
+            {
+                dir = setWallDir;
+            }
+            // var dir = SelectRandomEmptyWall(fromTile);
             var coord = fromTile.GetCoord(dir, 1);
+            if (!coord.InMapBounds())
+            {
+                return null;
+            }
 
             if (Map[(int)coord.x, (int)coord.y] == null)
             {
@@ -236,7 +301,7 @@ public class MapGenerator : MonoBehaviour
                 if (isFirst)
                 {
                     fromTile.AssignDoorAt(dir);
-                    tile.AssignDoorAt(dir.GetOpposite());
+                    tile.AssignDoorAt(dir.GetOpposite(), false);
                 }
 
                 hall.AddTile(tile, isLast);
@@ -279,16 +344,28 @@ public class MapGenerator : MonoBehaviour
         return true;
     }
 
-    // Vector2 GetMinBoundsMap(Vector2 bottomLeft, Vector2 range)
-    // {
-    //     var res = Vector2.zero;
-
-    // }
-
-    Room GenerateRoom(Vector2 bottomLeft, Vector2 range, Direction doorWall = Direction.Error, Tile doorNeighbor = null)
+    Room GenerateRoom(Vector2 bottomLeft, Vector2 range, Vector2 setSize, Direction doorWall = Direction.Error, Tile doorNeighbor = null)
     {
         Room room;
-        room = new Room(Room.GenerateSize(range));
+
+        // not first generation
+        if (doorWall != Direction.Error)
+        {
+            room = new Room(Room.GenerateSize(range));
+        }
+        else
+        {
+            if (setSize == Vector2.zero)
+            {
+                room = new Room(new Vector2(initialRoomSize[0], initialRoomSize[1]));
+            }
+            else
+            {
+                // Regerating same room
+                room = new Room(PlayerManager.Instance.currentSpace.Rect.size);
+            }
+        }
+
         room.Rect = new Rect(bottomLeft.x, bottomLeft.y, room.Size.x, room.Size.y);
 
         Vector2 doorTileCoord = new Vector2(-1, -1);
@@ -301,7 +378,7 @@ public class MapGenerator : MonoBehaviour
         var clampMaxX = Mathf.Min(bottomLeft.x + room.Size.x, worldSize[0]);
         var clampMaxY = Mathf.Min(bottomLeft.y + room.Size.y, worldSize[1]);
 
-        var roomParent = new GameObject($"Room {m_Rooms.Count}");
+        var roomParent = new GameObject($"Room {Rooms.Count}");
         m_GeneratedRoomObjects.Add(roomParent);
 
         for (int i = (int)bottomLeft.x; i < clampMaxX; i++)
@@ -319,7 +396,7 @@ public class MapGenerator : MonoBehaviour
 
                     if (tile.Coord == doorTileCoord && doorWall != Direction.Error)
                     {
-                        tile.AssignDoorAt(doorWall);
+                        tile.AssignDoorAt(doorWall, false);
                     }
                     Map[i, j] = tile;
                 }
@@ -339,6 +416,11 @@ public class MapGenerator : MonoBehaviour
                 space.TilesWithWalls.Remove(t);
             }
             space.TilesWithoutWalls.Add(t);
+
+            if (t.Doors.Contains(dir))
+            {
+                return;
+            }
 
             switch (dir)
             {

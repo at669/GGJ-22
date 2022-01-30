@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
+public enum RoomType { Lobby, Kitchen, IT, Bathroom, Broom }
 public enum Direction { Error, North, East, South, West }
 public enum TileType { Error, Room, Hall, Nothing }
 public enum RelativeDirection { Error, Front, Left, Right, Back }
@@ -253,5 +256,30 @@ public static class Extensions
     public static bool CanCreateHallNeighbor(this Tile tile)
     {
         return tile.Coord.x > 0 && tile.Coord.x < MapGenerator.WorldSizeX - 1 && tile.Coord.y > 0 && tile.Coord.y < MapGenerator.WorldSizeY - 1;
+    }
+
+    public static bool InMapBounds(this Vector2 coord)
+    {
+        return coord.x >= 0 && coord.x < MapGenerator.WorldSizeX && coord.y >= 0 && coord.y < MapGenerator.WorldSizeY;
+    }
+
+    public static List<int> RandomOrder(int length)
+    {
+        var counter = new List<int>();
+        var res = new List<int>();
+        for (int i = 0; i < length; i++)
+        {
+            counter.Add(i);
+        }
+
+        for (int i = 0; i < length; i++)
+        {
+            int rand = Random.Range(0, counter.Count);
+            res.Add(counter[rand]);
+            counter.RemoveAt(rand);
+        }
+
+        Debug.Log($"randomized {String.Join(", ", res)}");
+        return res;
     }
 }
