@@ -47,16 +47,16 @@ public class Room : Space
     };
     public static Dictionary<RoomType, string[]> WallFurnitureNames = new Dictionary<RoomType, string[]>
     {
-        { RoomType.Lobby, new string[] {  } },
-        { RoomType.Kitchen, new string[] { "Cylinder" } },
-        { RoomType.IT, new string[] { "Cylinder" } },
-        { RoomType.HR, new string[] { "Cylinder" } },
-        { RoomType.Engineering, new string[] { "Cylinder" } },
-        { RoomType.Marketing, new string[] { "Cylinder" } },
-        { RoomType.Finance, new string[] { "Cylinder" } },
-        { RoomType.Bathroom, new string[] { "Cylinder" } },
-        { RoomType.Custodial, new string[] { "Cylinder" } },
-        { RoomType.Security, new string[] { "Cylinder" } },
+        { RoomType.Lobby, new string[] { "LightStand" } },
+        { RoomType.Kitchen, new string[] { "LightStand" } },
+        { RoomType.IT, new string[] { "LightStand" } },
+        { RoomType.HR, new string[] { "LightStand" } },
+        { RoomType.Engineering, new string[] { "LightStand" } },
+        { RoomType.Marketing, new string[] { "LightStand" } },
+        { RoomType.Finance, new string[] { "LightStand" } },
+        { RoomType.Bathroom, new string[] { "LightStand" } },
+        { RoomType.Custodial, new string[] { "LightStand" } },
+        { RoomType.Security, new string[] { "LightStand" } },
     };
     public static Dictionary<RoomType, string[]> MiddleFurnitureNames = new Dictionary<RoomType, string[]>
     {

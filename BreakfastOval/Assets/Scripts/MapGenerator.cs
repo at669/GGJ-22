@@ -542,7 +542,11 @@ public class MapGenerator : MonoBehaviour
         for (int i = 0; i < tiles.Count; i++)
         {
             var obj = Resources.Load<GameObject>($"{type}/{furnitureNames[i]}");
-            var inst = Instantiate(obj, obj.transform.position + new Vector3(tiles[i].Coord.x, 0, tiles[i].Coord.y), Extensions.RandomRightAngleRotation(), tiles[i].transform);
+            // var inst = Instantiate(obj);
+            // inst.transform.position += new Vector3(tiles[i].Coord.x, 0, tiles[i].Coord.y);
+            // inst.transform.rotation = Extensions.RandomRightAngleRotation();
+            // inst.transform.parent = tiles[i].transform;
+            var inst = Instantiate(obj, new Vector3(tiles[i].Coord.x, 0, tiles[i].Coord.y), Extensions.RandomRightAngleRotation(), tiles[i].transform);
         }
     }
 
