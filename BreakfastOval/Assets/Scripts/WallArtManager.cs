@@ -10,6 +10,6 @@ public class WallArtManager : MonoBehaviour
     void OnEnable()
     {
         renderer = GetComponent<Renderer>();
-        renderer.enabled = Random.Range(0f, 1f) < MapGenerator.Instance.CHANCE_WALL;
+        renderer.enabled = transform.GetComponentInParent<Tile>().Doors.Count == 0 && Random.Range(0f, 1f) < MapGenerator.Instance.CHANCE_WALL;
     }
 }

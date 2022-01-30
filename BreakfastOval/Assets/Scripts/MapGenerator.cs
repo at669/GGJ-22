@@ -146,6 +146,15 @@ public class MapGenerator : MonoBehaviour
         Player.TeleportPlayer(playerSpawnPos);
         Rooms.Add(initRoom);
 
+        // // goal is lobby
+        // if (!keepRoom)
+        // {
+        //     PlayerManager.Instance.GoalRoom = initRoom;
+        //     PlayerManager.Instance.GoalCharacter = initRoom.Character;
+        //     PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
+        //     ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
+        // }
+
         // Generate first hall
 
         Tile initWallTile;
@@ -201,6 +210,7 @@ public class MapGenerator : MonoBehaviour
             // Find bottom left corner of next room
             (var bottomLeft, var range) = GetBottomLeftCorner(hallTile, doorWall);
             var room1 = GenerateRoom(bottomLeft, range, Vector2.zero, (RoomType)Order[i - 1], doorWall.GetOpposite(), hallTile);
+            // if (Rooms.Count == PlayerManager.Instance.GoalRoomIdx && !keepRoom)
             if (Rooms.Count == PlayerManager.Instance.GoalRoomIdx)
             {
                 PlayerManager.Instance.GoalRoom = room1;
@@ -468,7 +478,7 @@ public class MapGenerator : MonoBehaviour
         (var wallFurnTile, var wallFurnName) = room.SelectFurnitureTiles(FurnitureType.Wall);
         GenerateFurniture(room.RoomType, wallFurnTile, wallFurnName);
 
-        var ceilingTiles = room.SelectAnyTiles(Room.LIGHT_RATE);
+        var ceilingTiles = room.SelectAnyTiles();
         ceilingTiles.ForEach(t => t.GetComponentInChildren<CeilingLightManager>().Turn(true));
         return room;
     }
@@ -557,7 +567,19 @@ public class MapGenerator : MonoBehaviour
 
     public void IncrementGoal()
     {
-        OrderIdx += 1;
+        // if (OrderIdx == 0)
+        // {
+        //     PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+        //     PlayerManager.Instance.GoalRoom = Rooms[PlayerManager.Instance.GoalRoomIdx];
+        //     PlayerManager.Instance.GoalCharacter = Rooms[PlayerManager.Instance.GoalRoomIdx].Character;
+        //     PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
+        //     ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
+        //     return;
+        // }
+        // else
+        // {
+            OrderIdx += 1;
+        // }
 
         if (Order.Count <= OrderIdx)
         {
@@ -571,7 +593,6 @@ public class MapGenerator : MonoBehaviour
         PlayerManager.Instance.GoalRoom = Rooms[PlayerManager.Instance.GoalRoomIdx];
         PlayerManager.Instance.GoalCharacter = PlayerManager.Instance.GoalRoom.Character;
         PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
-        // ArrowMana`ger.target = hallTile.transform.position + new Vector3(0, 0.2f, 0);
         ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
     }
 }

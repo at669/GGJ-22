@@ -137,12 +137,11 @@ public class Room : Space
         return spaces[rand];
     }
 
-    public List<Tile> SelectAnyTiles(int num)
+    public List<Tile> SelectAnyTiles()
     {
         var resTiles = new List<Tile>();
+        var num = Mathf.Max(1, Mathf.CeilToInt(Tiles.Count / LIGHT_RATE));
         var order = Extensions.RandomOrder(num);
-
-        num = Mathf.Max(1, Mathf.CeilToInt(Tiles.Count / LIGHT_RATE));
 
         for (int i = 0; i < num; i++)
         {
