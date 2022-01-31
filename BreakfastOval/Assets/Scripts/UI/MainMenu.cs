@@ -69,7 +69,10 @@ public class MainMenu : MonoBehaviour
 
     public void ExitButton()
     {
-        //double check for WebGL build to not crash itch.io?
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
         Application.Quit();
+#endif
     }
 }
