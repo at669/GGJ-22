@@ -297,7 +297,7 @@ MonoBehaviour:
   currentDoorTile: {fileID: 0}
   currentDoorDir: 0
   bottomLeftOffset: {x: 0, y: 0, z: 0}
-  exclamation: {fileID: 2002266442}
+  exclamation: {fileID: 421464737}
   arrow: {fileID: 290575154}
 --- !u!1001 &260120086
 PrefabInstance:
@@ -404,6 +404,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d9cc9d7803104904b1127c3f2b14d21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &421464737 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 901b4e98a6fa70f4eb47ee618d4535b7, type: 3}
+  m_PrefabInstance: {fileID: 1620831022}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1273533256
 GameObject:
   m_ObjectHideFlags: 0
@@ -719,11 +724,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 901b4e98a6fa70f4eb47ee618d4535b7, type: 3}
---- !u!1 &2002266442 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 901b4e98a6fa70f4eb47ee618d4535b7, type: 3}
-  m_PrefabInstance: {fileID: 1620831022}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2067369778
 GameObject:
   m_ObjectHideFlags: 0

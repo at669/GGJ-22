@@ -9,6 +9,7 @@ public class PlayerManager : MonoBehaviour
     bool active = true;
     public Room GoalRoom;
     public GameObject GoalCharacter;
+    public int PrevGoalRoomIdx;
     public int GoalRoomIdx;
     static PlayerManager _instance;
     public static PlayerManager Instance

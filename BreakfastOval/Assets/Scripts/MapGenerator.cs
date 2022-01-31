@@ -19,15 +19,11 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public static List<int> CharacterOrder;
-    public static int CharacterOrderIdx = 0;
-
     public static List<int> Order;
     public static int OrderIdx = 0;
     public PlayerManager Player;
     public static Vector3 playerSpawnPos = Vector3.zero;
     public int[] initialRoomSize = new int[2];
-    public bool KEEP_CURRENT_ROOM = true;
     public int MAX_ITER = 100;
     public float CHANCE_WALLART = 0.2f;
     public int[] worldSize = new int[2];
@@ -137,6 +133,39 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    void RandomizePlayerGoalChar(bool init = false)
+    {
+        if (init)
+        {
+            PlayerManager.Instance.GoalRoomIdx = 0;
+            PlayerManager.Instance.PrevGoalRoomIdx = 0;
+        }
+        else
+        {
+            int rand = Random.Range(0, numRooms);
+            for (int i = 0; i < MAX_ITER; i++)
+            {
+                if (rand == PlayerManager.Instance.PrevGoalRoomIdx)
+                {
+                    rand = Random.Range(0, numRooms);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            // int rand = Random.Range(0, numRooms);
+
+            PlayerManager.Instance.PrevGoalRoomIdx = PlayerManager.Instance.GoalRoomIdx;
+            PlayerManager.Instance.GoalRoomIdx = rand;
+        }
+        PlayerManager.Instance.GoalRoom = Rooms[PlayerManager.Instance.GoalRoomIdx];
+        PlayerManager.Instance.GoalCharacter = PlayerManager.Instance.GoalRoom.Character;
+        PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
+        ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
+    }
+
     bool BeginGeneration(bool keepRoom)
     {
         var origPlayerSpace = PlayerManager.Instance.currentSpace;
@@ -149,7 +178,10 @@ public class MapGenerator : MonoBehaviour
                 Order[i]++;
             }
             OrderIdx = 0;
-            PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+
+            // INITIAL TIME
+            // PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+            // RandomizePlayerGoalChar(true);
         }
 
         // Generate current room
@@ -171,16 +203,16 @@ public class MapGenerator : MonoBehaviour
         Player.TeleportPlayer(playerSpawnPos);
         Rooms.Add(initRoom);
 
-        // goal is lobby
-        if (!keepRoom)
-        {
-            OrderIdx = -1;
-            // PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
-            PlayerManager.Instance.GoalRoom = initRoom;
-            PlayerManager.Instance.GoalCharacter = initRoom.Character;
-            PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
-            ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
-        }
+        // // goal is lobby
+        // if (!keepRoom)
+        // {
+        //     OrderIdx = -1;
+        //     // // PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+        //     // PlayerManager.Instance.GoalRoom = initRoom;
+        //     // PlayerManager.Instance.GoalCharacter = initRoom.Character;
+        //     // PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
+        //     // ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
+        // }
 
         // Generate first hall
 
@@ -219,6 +251,7 @@ public class MapGenerator : MonoBehaviour
         }
         Halls.Add(initHall);
 
+
         for (int i = 1; i < numRooms; i++)
         {
             // Generate second room
@@ -247,18 +280,18 @@ public class MapGenerator : MonoBehaviour
                 room1 = GenerateRoom(bottomLeft, range, Vector2.zero, (RoomType)Order[i - 1], doorWall.GetOpposite(), hallTile);
             }
 
-            if (roomCountIdx == PlayerManager.Instance.GoalRoomIdx && keepRoom)
-            {
-                PlayerManager.Instance.GoalRoom = room1;
-                PlayerManager.Instance.GoalCharacter = room1.Character;
-                if (room1.Character == null)
-                {
-                    Debug.Log("null goal character in room 1?");
-                    return false;
-                }
-                PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
-                ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
-            }
+            // if (roomCountIdx == PlayerManager.Instance.GoalRoomIdx && keepRoom)
+            // {
+            //     PlayerManager.Instance.GoalRoom = room1;
+            //     PlayerManager.Instance.GoalCharacter = room1.Character;
+            //     if (room1.Character == null)
+            //     {
+            //         Debug.Log("null goal character in room 1?");
+            //         return false;
+            //     }
+            //     PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
+            //     ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
+            // }
             Rooms.Add(room1);
 
             if (i == numRooms - 1)
@@ -305,6 +338,8 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+
+        RandomizePlayerGoalChar(!keepRoom);
 
         return true;
     }
@@ -640,29 +675,30 @@ public class MapGenerator : MonoBehaviour
 
     public void IncrementGoal()
     {
-        OrderIdx += 1;
+        RandomizePlayerGoalChar();
+        // OrderIdx += 1;
 
-        // finished cycle
-        if (Order.Count <= OrderIdx)
-        {
-            Order = Extensions.RandomOrder(numRooms - 1);
-            for (int i = 0; i < Order.Count; i++)
-            {
-                Order[i]++;
-            }
-            OrderIdx = 0;
-            PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
-            Generate(true);
-            // Debug.Log("end game!");
-            // ArrowManager.Instance.gameObject.SetActive(false);
-            // return;
-        }
+        // // finished cycle
+        // if (Order.Count <= OrderIdx)
+        // {
+        //     Order = Extensions.RandomOrder(numRooms - 1);
+        //     for (int i = 0; i < Order.Count; i++)
+        //     {
+        //         Order[i]++;
+        //     }
+        //     OrderIdx = 0;
+        //     PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+        //     Generate(true);
+        //     // Debug.Log("end game!");
+        //     // ArrowManager.Instance.gameObject.SetActive(false);
+        //     // return;
+        // }
 
-        PlayerManager.Instance.GoalRoom.GetAllDoorTiles().ForEach(t => t.GetComponentInChildren<DoorTrigger>().ShouldRegenOnEnter = true);
-        PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
-        PlayerManager.Instance.GoalRoom = Rooms[PlayerManager.Instance.GoalRoomIdx];
-        PlayerManager.Instance.GoalCharacter = PlayerManager.Instance.GoalRoom.Character;
-        PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
-        ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
+        // PlayerManager.Instance.GoalRoom.GetAllDoorTiles().ForEach(t => t.GetComponentInChildren<DoorTrigger>().ShouldRegenOnEnter = true);
+        // PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+        // PlayerManager.Instance.GoalRoom = Rooms[PlayerManager.Instance.GoalRoomIdx];
+        // PlayerManager.Instance.GoalCharacter = PlayerManager.Instance.GoalRoom.Character;
+        // PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
+        // ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
     }
 }

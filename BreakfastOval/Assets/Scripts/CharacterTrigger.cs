@@ -51,6 +51,7 @@ public class CharacterTrigger : MonoBehaviour
                 {
                     IsGoal = false;
                     showLobby = false;
+                    PlayerManager.Instance.ToggleExclamation(false);
                     MapGenerator.Instance.IncrementGoal();
                 }
                 else
