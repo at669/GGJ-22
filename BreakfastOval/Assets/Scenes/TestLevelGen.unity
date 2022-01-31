@@ -293,6 +293,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GoalCharacter: {fileID: 0}
+  PrevGoalRoomIdx: 0
   GoalRoomIdx: 0
   currentDoorTile: {fileID: 0}
   currentDoorDir: 0
@@ -453,13 +454,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3a657bb7abf84ac291ad3014308d65a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Lobby: {fileID: 8300000, guid: 89a9e76fb110f994b979ece8162ae47b, type: 3}
+  Kitchen: {fileID: 8300000, guid: 3d45b42cbf4f1f34ebb88d1e4bede3b1, type: 3}
+  IT: {fileID: 8300000, guid: 2ea915de30347934495f1fa3ecfd94a5, type: 3}
+  HR: {fileID: 8300000, guid: 11c30eabc626ba445958a51fd0f58ab8, type: 3}
+  Engineering: {fileID: 8300000, guid: f075ece1fcd951d4da80abeb94d0a1f6, type: 3}
+  Marketing: {fileID: 8300000, guid: 5d2f82bf495512d45bdaa104a5192c11, type: 3}
+  Finance: {fileID: 8300000, guid: 9d96270a8457eb14b904e1169c21ce38, type: 3}
+  Bathroom: {fileID: 8300000, guid: 77626d7355729f741a7568e85b821d04, type: 3}
+  Custodial: {fileID: 8300000, guid: 6c2124b15477cf448812d29b2495652f, type: 3}
+  Security: {fileID: 8300000, guid: 9afad10d49d7ab14e902345d831785a7, type: 3}
   Player: {fileID: 230367868}
   initialRoomSize: 0400000004000000
-  KEEP_CURRENT_ROOM: 1
   MAX_ITER: 100
   CHANCE_WALLART: 0.2
   worldSize: 3200000032000000
-  numRooms: 2
+  numRooms: 10
   hallLength: 030000000a000000
   roomMinSize: 0300000003000000
   roomMaxSize: 0500000005000000

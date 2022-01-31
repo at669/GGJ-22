@@ -60,7 +60,7 @@ public class Room : Space
     };
     public static Dictionary<RoomType, string[]> MiddleFurnitureNames = new Dictionary<RoomType, string[]>
     {
-        { RoomType.Lobby, new string[] { "Desk" } },
+        { RoomType.Lobby, new string[] {  } },
         { RoomType.Kitchen, new string[] { } },
         { RoomType.IT, new string[] { "Desk" } },
         { RoomType.HR, new string[] { "Desk" } },

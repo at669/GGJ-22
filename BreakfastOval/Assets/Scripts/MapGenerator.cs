@@ -6,6 +6,17 @@ using UnityEngine.SceneManagement;
 
 public class MapGenerator : MonoBehaviour
 {
+    public AudioClip Lobby; //: Local Forecast
+    public AudioClip Kitchen; //: Stringed Disco
+    public AudioClip IT; //: Scheming Weasel
+    public AudioClip HR; //: Quirky Dog
+    public AudioClip Engineering; //: Electric Cabello
+    public AudioClip Marketing; //: Loopster
+    public AudioClip Finance; //: One Eyed Maestro
+    public AudioClip Bathroom; //: The Lovelight in Your Eyes
+    public AudioClip Custodial; //: Parisian
+    public AudioClip Security; //: The Show Must Go On
+    public Dictionary<RoomType, AudioClip> RoomToAudio;
     static MapGenerator _instance;
     public static MapGenerator Instance
     {
@@ -59,6 +70,20 @@ public class MapGenerator : MonoBehaviour
         WorldSizeY = worldSize[1];
 
         Map = new Tile[worldSize[0], worldSize[1]];
+
+        RoomToAudio = new Dictionary<RoomType, AudioClip>()
+        {
+            { RoomType.Lobby, Lobby },
+            { RoomType.Kitchen, Kitchen },
+            { RoomType.IT, IT },
+            { RoomType.HR, HR },
+            { RoomType.Engineering, Engineering },
+            { RoomType.Marketing, Marketing },
+            { RoomType.Finance, Finance },
+            { RoomType.Bathroom, Bathroom },
+            { RoomType.Custodial, Custodial },
+            { RoomType.Security, Security }
+        };
 
         Generate(false);
     }
@@ -550,7 +575,15 @@ public class MapGenerator : MonoBehaviour
                     //     lightObj.transform.parent = tileObj.transform;
                     //     GenerateLight(lightObj, new Vector3(tile.Coord.x + 2, 2.5f, tile.Coord.y + 2));
                     //     first = false;
-                    // }
+                    // }\
+
+                    if (first)
+                    {
+                        var audioObj = new GameObject($"Audio Source {room.RoomType}");
+                        audioObj.transform.parent = tileObj.transform;
+                        GenerateAudio(audioObj, new Vector3(tile.Coord.x + 2, 0.5f, tile.Coord.y + 2), room.RoomType);
+                        first = false;
+                    }
 
                     if (tile.Coord == doorTileCoord && doorWall != Direction.Error)
                     {
@@ -610,6 +643,18 @@ public class MapGenerator : MonoBehaviour
                 Instantiate(obj, new Vector3(tiles[i].Coord.x, 0, tiles[i].Coord.y), Extensions.RandomRightAngleRotation(), tiles[i].transform);
             }
         }
+    }
+
+    void GenerateAudio(GameObject obj, Vector3 pos, RoomType type)
+    {
+        var audio = obj.AddComponent<AudioSource>();
+        audio.clip = RoomToAudio[type];
+        audio.loop = true;
+        audio.rolloffMode = AudioRolloffMode.Linear;
+        audio.maxDistance = 5;
+        audio.spatialBlend = 1;
+        audio.Play();
+        obj.transform.position = pos;
     }
 
     static void GenerateLight(GameObject obj, Vector3 pos)
