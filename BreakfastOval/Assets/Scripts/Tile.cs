@@ -18,6 +18,10 @@ public class Tile : MonoBehaviour
     public GameObject WallEastObj;
     public GameObject WallSouthObj;
     public GameObject WallWestObj;
+    public GameObject DoorNorthObj;
+    public GameObject DoorEastObj;
+    public GameObject DoorSouthObj;
+    public GameObject DoorWestObj;
     public GameObject FloorObj;
     public DoorTrigger DoorTrigger;
 
@@ -25,6 +29,14 @@ public class Tile : MonoBehaviour
     void OnEnable()
     {
         Walls = Extensions.AllDirections();
+        DoorNorthObj = WallNorthObj.transform.Find("Door").gameObject;
+        DoorNorthObj.SetActive(false);
+        DoorEastObj = WallEastObj.transform.Find("Door").gameObject;
+        DoorEastObj.SetActive(false);
+        DoorSouthObj = WallSouthObj.transform.Find("Door").gameObject;
+        DoorSouthObj.SetActive(false);
+        DoorWestObj = WallWestObj.transform.Find("Door").gameObject;
+        DoorWestObj.SetActive(false);
     }
 
     public void AssignDoorAt(Direction dir, bool first = true)
@@ -43,7 +55,9 @@ public class Tile : MonoBehaviour
         {
             wallObj.SetActive(true);
             wallColl.isTrigger = true;
-            wallRend.material.color = Color.blue;
+            wallRend.enabled = false;
+            GetDoorObject(dir).SetActive(true);
+            // wallRend.material.color = Color.blue;
             wallObj.transform.localScale = new Vector3(0.9f, wallObj.transform.localScale.y, wallObj.transform.localScale.z);
         }
         else
@@ -102,6 +116,23 @@ public class Tile : MonoBehaviour
                 return WallSouthObj;
             case Direction.West:
                 return WallWestObj;
+            default:
+                return null;
+        }
+    }
+
+    public GameObject GetDoorObject(Direction dir)
+    {
+        switch (dir)
+        {
+            case Direction.North:
+                return DoorNorthObj;
+            case Direction.East:
+                return DoorEastObj;
+            case Direction.South:
+                return DoorSouthObj;
+            case Direction.West:
+                return DoorWestObj;
             default:
                 return null;
         }

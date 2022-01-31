@@ -20,9 +20,11 @@ public class InteractionManager : MonoBehaviour
     }
 
     public GameObject ButtonPanel;
+    public GameObject PausePanel;
     TextMeshProUGUI Question;
     TextMeshProUGUI Answer0;
     TextMeshProUGUI Answer1;
+    bool paused = false;
 
     // Start is called before the first frame update
     void Start()
@@ -30,6 +32,37 @@ public class InteractionManager : MonoBehaviour
         Question = ButtonPanel.transform.Find("Question").GetComponent<TextMeshProUGUI>();
         Answer0 = ButtonPanel.transform.Find("Answer0").GetComponentInChildren<TextMeshProUGUI>();
         Answer1 = ButtonPanel.transform.Find("Answer1").GetComponentInChildren<TextMeshProUGUI>();
+    }
+
+    void Update()
+    {
+        // if (Input.GetKeyDown(KeyCode.P))
+        // {
+        //     if (!paused)
+        //     {
+        //         Pause();
+        //     }
+        //     else
+        //     {
+        //         Resume();
+        //     }
+        // }
+    }
+
+    public void Resume()
+    {
+        PausePanel.SetActive(false);
+        PlayerManager.Instance.ToggleController(false);
+        // Time.timeScale = 1;
+        paused = false;
+    }
+
+    public void Pause()
+    {
+        PausePanel.SetActive(true);
+        PlayerManager.Instance.ToggleController(true);
+        // Time.timeScale = 0;
+        paused = true;
     }
 
     void AssignValues()
@@ -60,5 +93,14 @@ public class InteractionManager : MonoBehaviour
             Debug.Log("regenerating lol");
             MapGenerator.Instance.Generate(true);
         }
+    }
+
+    public void ExitButton()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }

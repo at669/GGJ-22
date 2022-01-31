@@ -9,6 +9,7 @@ public class PlayerManager : MonoBehaviour
     bool active = true;
     public Room GoalRoom;
     public GameObject GoalCharacter;
+    public int PrevGoalRoomIdx;
     public int GoalRoomIdx;
     static PlayerManager _instance;
     public static PlayerManager Instance
@@ -26,10 +27,18 @@ public class PlayerManager : MonoBehaviour
     public Tile currentDoorTile;
     public Direction currentDoorDir;
     public Vector3 bottomLeftOffset;
+    public GameObject exclamation;
+    public GameObject arrow;
 
     void Start()
     {
         controller = GetComponent<FirstPersonController>();
+    }
+
+    public void ToggleExclamation(bool val)
+    {
+        exclamation.SetActive(val);
+        arrow.SetActive(!val);
     }
 
     // Update is called once per frame

@@ -17,6 +17,8 @@ public class QuestionOptions : MonoBehaviour
             return _instance;
         }
     }
+
+    public string LobbyLine = "Hi, <color=red>x{S$w([ZQF}=</color>!";
     public List<QuestionType> Questions = new List<QuestionType>();
 }
 

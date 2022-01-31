@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
     public GameObject mainMenu;
     public GameObject settingsMenu;
+    public GameObject creditsMenu;
 
     // Start is called before the first frame update
     void Start()
@@ -28,18 +30,37 @@ public class MainMenu : MonoBehaviour
                 settingsMenu.SetActive(false);
                 mainMenu.SetActive(true);
             }
+            else if(creditsMenu.activeInHierarchy)
+            {
+                // Go back to main menu
+                creditsMenu.SetActive(false);
+                mainMenu.SetActive(true);
+            }
         }
     }
 
     public void StartButton()
     {
         // Start scene 1
-        // StartCoroutine(GameManager.instance.ChangeScene("#"));
+        SceneManager.LoadScene("Game");
+    }
+
+    public void CreditsButton()
+    {
+        // mainMenu.SetActive(false);
+        creditsMenu.SetActive(true);
+    }
+
+    public void BackButton()
+    {
+        settingsMenu.SetActive(false);
+        creditsMenu.SetActive(false);
+        mainMenu.SetActive(true);
     }
 
     public void SettingsButton()
     {
-        mainMenu.SetActive(false);
+        // mainMenu.SetActive(false);
         settingsMenu.SetActive(true);
 
         // eh?
@@ -48,7 +69,10 @@ public class MainMenu : MonoBehaviour
 
     public void ExitButton()
     {
-        //double check for WebGL build to not crash itch.io?
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
         Application.Quit();
+#endif
     }
 }

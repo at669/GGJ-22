@@ -6,6 +6,17 @@ using UnityEngine.SceneManagement;
 
 public class MapGenerator : MonoBehaviour
 {
+    public AudioClip Lobby; //: Local Forecast
+    public AudioClip Kitchen; //: Stringed Disco
+    public AudioClip IT; //: Scheming Weasel
+    public AudioClip HR; //: Quirky Dog
+    public AudioClip Engineering; //: Electric Cabello
+    public AudioClip Marketing; //: Loopster
+    public AudioClip Finance; //: One Eyed Maestro
+    public AudioClip Bathroom; //: The Lovelight in Your Eyes
+    public AudioClip Custodial; //: Parisian
+    public AudioClip Security; //: The Show Must Go On
+    public Dictionary<RoomType, AudioClip> RoomToAudio;
     static MapGenerator _instance;
     public static MapGenerator Instance
     {
@@ -19,15 +30,11 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public static List<int> CharacterOrder;
-    public static int CharacterOrderIdx = 0;
-
     public static List<int> Order;
     public static int OrderIdx = 0;
     public PlayerManager Player;
     public static Vector3 playerSpawnPos = Vector3.zero;
     public int[] initialRoomSize = new int[2];
-    public bool KEEP_CURRENT_ROOM = true;
     public int MAX_ITER = 100;
     public float CHANCE_WALLART = 0.2f;
     public int[] worldSize = new int[2];
@@ -64,6 +71,20 @@ public class MapGenerator : MonoBehaviour
 
         Map = new Tile[worldSize[0], worldSize[1]];
 
+        RoomToAudio = new Dictionary<RoomType, AudioClip>()
+        {
+            { RoomType.Lobby, Lobby },
+            { RoomType.Kitchen, Kitchen },
+            { RoomType.IT, IT },
+            { RoomType.HR, HR },
+            { RoomType.Engineering, Engineering },
+            { RoomType.Marketing, Marketing },
+            { RoomType.Finance, Finance },
+            { RoomType.Bathroom, Bathroom },
+            { RoomType.Custodial, Custodial },
+            { RoomType.Security, Security }
+        };
+
         Generate(false);
     }
 
@@ -78,19 +99,24 @@ public class MapGenerator : MonoBehaviour
         Gizmos.DrawSphere(PlayerManager.Instance.transform.position + Vector3.up * 3, 0.5f);
     }
 
+    void ReloadGame()
+    {
+        Debug.Log("reloading scene...");
+        Rooms = new List<Room>();
+        Halls = new List<Hall>();
+
+        CanReload = false;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     // Update is called once per frame
     void Update()
     {
         // if (CanReload && Keyboard.current.digit0Key.wasPressedThisFrame)
         if (CanReload && Input.GetKeyDown(KeyCode.Alpha0))
         {
-            Debug.Log("reloading scene...");
-            Rooms = new List<Room>();
-            Halls = new List<Hall>();
-
-            CanReload = false;
-
-			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            ReloadGame();
         }
 
         // if (Keyboard.current.digit1Key.wasPressedThisFrame)
@@ -112,7 +138,9 @@ public class MapGenerator : MonoBehaviour
                 return;
             }
         }
-        Debug.LogError($"FAILED ITERATIONS!!");
+        Debug.Log($"FAILED ITERATIONS!!");
+        ReloadGame();
+
     }
 
     void ResetAll()
@@ -124,11 +152,55 @@ public class MapGenerator : MonoBehaviour
         Halls = new List<Hall>();
 
         Map = new Tile[worldSize[0], worldSize[1]];
-        // TODO: pooling?
         foreach (var o in m_GeneratedRoomObjects)
         {
             Destroy(o);
         }
+    }
+
+    void RandomizePlayerGoalChar(bool init = false)
+    {
+        if (init)
+        {
+            PlayerManager.Instance.GoalRoomIdx = 0;
+            PlayerManager.Instance.PrevGoalRoomIdx = 0;
+        }
+        else
+        {
+            int rand = Random.Range(0, numRooms);
+            for (int i = 0; i < MAX_ITER; i++)
+            {
+                if (rand == PlayerManager.Instance.PrevGoalRoomIdx)
+                {
+                    rand = Random.Range(0, numRooms);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            // int rand = Random.Range(0, numRooms);
+
+            PlayerManager.Instance.PrevGoalRoomIdx = PlayerManager.Instance.GoalRoomIdx;
+            PlayerManager.Instance.GoalRoomIdx = rand;
+        }
+        if (PlayerManager.Instance.GoalRoom != null)
+        {
+            PlayerManager.Instance.GoalRoom.GetAllDoorTiles().ForEach(t => t.GetComponentInChildren<DoorTrigger>().ShouldRegenOnEnter = true);
+        }
+        PlayerManager.Instance.GoalRoom = Rooms[PlayerManager.Instance.GoalRoomIdx];
+        PlayerManager.Instance.GoalCharacter = PlayerManager.Instance.GoalRoom.Character;
+        PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
+        ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
+
+
+        // PlayerManager.Instance.GoalRoom.GetAllDoorTiles().ForEach(t => t.GetComponentInChildren<DoorTrigger>().ShouldRegenOnEnter = true);
+        // PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+        // PlayerManager.Instance.GoalRoom = Rooms[PlayerManager.Instance.GoalRoomIdx];
+        // PlayerManager.Instance.GoalCharacter = PlayerManager.Instance.GoalRoom.Character;
+        // PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
+        // ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
     }
 
     bool BeginGeneration(bool keepRoom)
@@ -143,7 +215,10 @@ public class MapGenerator : MonoBehaviour
                 Order[i]++;
             }
             OrderIdx = 0;
-            PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+
+            // INITIAL TIME
+            // PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+            // RandomizePlayerGoalChar(true);
         }
 
         // Generate current room
@@ -165,16 +240,16 @@ public class MapGenerator : MonoBehaviour
         Player.TeleportPlayer(playerSpawnPos);
         Rooms.Add(initRoom);
 
-        // goal is lobby
-        if (!keepRoom)
-        {
-            OrderIdx = -1;
-            // PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
-            PlayerManager.Instance.GoalRoom = initRoom;
-            PlayerManager.Instance.GoalCharacter = initRoom.Character;
-            PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
-            ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
-        }
+        // // goal is lobby
+        // if (!keepRoom)
+        // {
+        //     OrderIdx = -1;
+        //     // // PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+        //     // PlayerManager.Instance.GoalRoom = initRoom;
+        //     // PlayerManager.Instance.GoalCharacter = initRoom.Character;
+        //     // PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
+        //     // ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
+        // }
 
         // Generate first hall
 
@@ -213,6 +288,7 @@ public class MapGenerator : MonoBehaviour
         }
         Halls.Add(initHall);
 
+
         for (int i = 1; i < numRooms; i++)
         {
             // Generate second room
@@ -241,18 +317,18 @@ public class MapGenerator : MonoBehaviour
                 room1 = GenerateRoom(bottomLeft, range, Vector2.zero, (RoomType)Order[i - 1], doorWall.GetOpposite(), hallTile);
             }
 
-            if (roomCountIdx == PlayerManager.Instance.GoalRoomIdx && keepRoom)
-            {
-                PlayerManager.Instance.GoalRoom = room1;
-                PlayerManager.Instance.GoalCharacter = room1.Character;
-                if (room1.Character == null)
-                {
-                    Debug.Log("null goal character in room 1?");
-                    return false;
-                }
-                PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
-                ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
-            }
+            // if (roomCountIdx == PlayerManager.Instance.GoalRoomIdx && keepRoom)
+            // {
+            //     PlayerManager.Instance.GoalRoom = room1;
+            //     PlayerManager.Instance.GoalCharacter = room1.Character;
+            //     if (room1.Character == null)
+            //     {
+            //         Debug.Log("null goal character in room 1?");
+            //         return false;
+            //     }
+            //     PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
+            //     ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
+            // }
             Rooms.Add(room1);
 
             if (i == numRooms - 1)
@@ -299,6 +375,8 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+
+        RandomizePlayerGoalChar(!keepRoom);
 
         return true;
     }
@@ -509,7 +587,15 @@ public class MapGenerator : MonoBehaviour
                     //     lightObj.transform.parent = tileObj.transform;
                     //     GenerateLight(lightObj, new Vector3(tile.Coord.x + 2, 2.5f, tile.Coord.y + 2));
                     //     first = false;
-                    // }
+                    // }\
+
+                    if (first)
+                    {
+                        var audioObj = new GameObject($"Audio Source {room.RoomType}");
+                        audioObj.transform.parent = tileObj.transform;
+                        GenerateAudio(audioObj, new Vector3(tile.Coord.x + 2, 0.5f, tile.Coord.y + 2), room.RoomType);
+                        first = false;
+                    }
 
                     if (tile.Coord == doorTileCoord && doorWall != Direction.Error)
                     {
@@ -548,7 +634,7 @@ public class MapGenerator : MonoBehaviour
             return false;
         }
         var obj = Resources.Load<GameObject>($"Characters/{Room.RoomTypeToCharacter[type]}");
-        var inst = Instantiate(obj, new Vector3(tile.Coord.x, 0.25f, tile.Coord.y), Quaternion.identity, tile.transform);
+        var inst = Instantiate(obj, new Vector3(tile.Coord.x, 0.3f, tile.Coord.y), Quaternion.identity, tile.transform);
         room.Character = inst;
         return true;
     }
@@ -569,6 +655,18 @@ public class MapGenerator : MonoBehaviour
                 Instantiate(obj, new Vector3(tiles[i].Coord.x, 0, tiles[i].Coord.y), Extensions.RandomRightAngleRotation(), tiles[i].transform);
             }
         }
+    }
+
+    void GenerateAudio(GameObject obj, Vector3 pos, RoomType type)
+    {
+        var audio = obj.AddComponent<AudioSource>();
+        audio.clip = RoomToAudio[type];
+        audio.loop = true;
+        audio.rolloffMode = AudioRolloffMode.Linear;
+        audio.maxDistance = 5;
+        audio.spatialBlend = 1;
+        audio.Play();
+        obj.transform.position = pos;
     }
 
     static void GenerateLight(GameObject obj, Vector3 pos)
@@ -634,29 +732,30 @@ public class MapGenerator : MonoBehaviour
 
     public void IncrementGoal()
     {
-        OrderIdx += 1;
+        RandomizePlayerGoalChar();
+        // OrderIdx += 1;
 
-        // finished cycle
-        if (Order.Count <= OrderIdx)
-        {
-            Order = Extensions.RandomOrder(numRooms - 1);
-            for (int i = 0; i < Order.Count; i++)
-            {
-                Order[i]++;
-            }
-            OrderIdx = 0;
-            PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
-            Generate(true);
-            // Debug.Log("end game!");
-            // ArrowManager.Instance.gameObject.SetActive(false);
-            // return;
-        }
+        // // finished cycle
+        // if (Order.Count <= OrderIdx)
+        // {
+        //     Order = Extensions.RandomOrder(numRooms - 1);
+        //     for (int i = 0; i < Order.Count; i++)
+        //     {
+        //         Order[i]++;
+        //     }
+        //     OrderIdx = 0;
+        //     PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+        //     Generate(true);
+        //     // Debug.Log("end game!");
+        //     // ArrowManager.Instance.gameObject.SetActive(false);
+        //     // return;
+        // }
 
-        PlayerManager.Instance.GoalRoom.GetAllDoorTiles().ForEach(t => t.GetComponentInChildren<DoorTrigger>().ShouldRegenOnEnter = true);
-        PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
-        PlayerManager.Instance.GoalRoom = Rooms[PlayerManager.Instance.GoalRoomIdx];
-        PlayerManager.Instance.GoalCharacter = PlayerManager.Instance.GoalRoom.Character;
-        PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
-        ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
+        // PlayerManager.Instance.GoalRoom.GetAllDoorTiles().ForEach(t => t.GetComponentInChildren<DoorTrigger>().ShouldRegenOnEnter = true);
+        // PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+        // PlayerManager.Instance.GoalRoom = Rooms[PlayerManager.Instance.GoalRoomIdx];
+        // PlayerManager.Instance.GoalCharacter = PlayerManager.Instance.GoalRoom.Character;
+        // PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
+        // ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
     }
 }
