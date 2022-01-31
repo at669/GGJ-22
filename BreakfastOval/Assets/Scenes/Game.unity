@@ -300,67 +300,6 @@ MonoBehaviour:
   bottomLeftOffset: {x: 0, y: 0, z: 0}
   exclamation: {fileID: 421464737}
   arrow: {fileID: 290575154}
---- !u!1001 &260120086
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883639709648511241, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883639709648511254, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
-      propertyPath: m_Name
-      value: Cabinet
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883639709648511254, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3e67ee55b05f743be9eb2ca993f71061, type: 3}
 --- !u!1 &290575154
 GameObject:
   m_ObjectHideFlags: 0
@@ -466,7 +405,7 @@ MonoBehaviour:
   Security: {fileID: 8300000, guid: 9afad10d49d7ab14e902345d831785a7, type: 3}
   Player: {fileID: 230367868}
   initialRoomSize: 0400000004000000
-  MAX_ITER: 100
+  MAX_ITER: 25
   CHANCE_WALLART: 0.2
   worldSize: 3200000032000000
   numRooms: 10

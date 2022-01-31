@@ -185,10 +185,22 @@ public class MapGenerator : MonoBehaviour
             PlayerManager.Instance.PrevGoalRoomIdx = PlayerManager.Instance.GoalRoomIdx;
             PlayerManager.Instance.GoalRoomIdx = rand;
         }
+        if (PlayerManager.Instance.GoalRoom != null)
+        {
+            PlayerManager.Instance.GoalRoom.GetAllDoorTiles().ForEach(t => t.GetComponentInChildren<DoorTrigger>().ShouldRegenOnEnter = true);
+        }
         PlayerManager.Instance.GoalRoom = Rooms[PlayerManager.Instance.GoalRoomIdx];
         PlayerManager.Instance.GoalCharacter = PlayerManager.Instance.GoalRoom.Character;
         PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
         ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
+
+
+        // PlayerManager.Instance.GoalRoom.GetAllDoorTiles().ForEach(t => t.GetComponentInChildren<DoorTrigger>().ShouldRegenOnEnter = true);
+        // PlayerManager.Instance.GoalRoomIdx = Order[OrderIdx];
+        // PlayerManager.Instance.GoalRoom = Rooms[PlayerManager.Instance.GoalRoomIdx];
+        // PlayerManager.Instance.GoalCharacter = PlayerManager.Instance.GoalRoom.Character;
+        // PlayerManager.Instance.GoalCharacter.GetComponentInChildren<CharacterTrigger>().IsGoal = true;
+        // ArrowManager.target = PlayerManager.Instance.GoalCharacter.transform.position + new Vector3(0, 0.2f, 0);
     }
 
     bool BeginGeneration(bool keepRoom)
